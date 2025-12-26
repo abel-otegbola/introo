@@ -41,7 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${figtree.variable} ${questrial.variable} bg-white dark:bg-primary antialiased 2xl:text-[18px] md:text-[16px] text-[14px] leading-[100%] tracking-[0%]`}
+        className={`${figtree.variable} ${questrial.variable} bg-white dark:bg-primary antialiased 2xl:text-[18px] md:text-[15px] text-[14px] leading-[100%] tracking-[0%]`}
       >
         <ThemeProvider>
           <AuthProvider>
