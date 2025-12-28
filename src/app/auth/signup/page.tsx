@@ -32,7 +32,7 @@ export default function Signup() {
                     key={index}
                     href={item === "Sign in" ? "/auth/login" : "/auth/signup"}
                     className={`w-full text-center py-[12px] rounded-[12px] font-medium 
-                      ${item === "Sign up" ? "bg-white dark:bg-primary text-secondary shadow-sm" : "text-gray-400 hover:text-secondary" }`}
+                      ${item === "Sign up" ? "bg-white dark:bg-primary shadow-sm" : "text-gray-400" }`}
                   >
                     { item }
                   </Link>

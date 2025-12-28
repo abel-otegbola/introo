@@ -24,13 +24,13 @@ export default function Input({ className, disabled, label, name, value, type, o
             { label ? <label htmlFor={name} className={`${focus ? "text-secondary" : ""}`}>{label}</label> : "" }
 
             <div className={`flex items-center gap-1 relative rounded-[12px] bg-white dark:bg-primary dark:text-gray w-full border p-1 px-1 duration-500 
-                ${error && !focus ? "border-red-500 text-red-500 " : "border-gray/[0.08] dark:border-gray-500/[0.4]"}
+                ${error && !focus ? "border-red-500 text-red-500 " : "border-gray-500/[0.2]"}
                 ${focus ? "border-secondary dark:border-secondary shadow-input-active" : ""}
                 ${className}
             `}>
                 <span className={`${!focus ? "opacity-[0.4]": "text-secondary"} ml-2 ${leftIcon ? "mr-2" : ""}`}>{ leftIcon }</span>
                 <input 
-                    className={` py-[12px] w-full outline-none bg-transparent rounded-[8px]
+                    className={`md:py-[12px] py-[8px] w-full outline-none bg-transparent rounded-[8px]
                         ${className} 
                         ${disabled ? "opacity-[0.25]" : ""}
                     `}

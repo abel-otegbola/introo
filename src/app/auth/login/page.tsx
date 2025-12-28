@@ -34,7 +34,7 @@ export default function Login() {
                     key={index}
                     href={item === "Sign in" ? "/auth/login" : "/auth/signup"}
                     className={`w-full text-center py-[12px] rounded-[8px] font-medium 
-                      ${item === "Sign in" ? "bg-white dark:bg-primary text-secondary shadow-sm" : "text-gray-400 hover:text-secondary" }`}
+                      ${item === "Sign in" ? "bg-white dark:bg-primary shadow-sm" : "text-gray-400" }`}
                   >
                     { item }
                   </Link>
