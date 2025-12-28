@@ -30,7 +30,7 @@ export default function Input({ className, disabled, label, name, value, type, o
             `}>
                 <span className={`${!focus ? "opacity-[0.4]": "text-secondary"} ml-2 ${leftIcon ? "mr-2" : ""}`}>{ leftIcon }</span>
                 <input 
-                    className={`md:py-[12px] py-[8px] w-full outline-none bg-transparent rounded-[8px]
+                    className={`md:py-[12px] py-[10px] w-full outline-none bg-transparent rounded-[8px]
                         ${className} 
                         ${disabled ? "opacity-[0.25]" : ""}
                     `}
