@@ -33,7 +33,7 @@ export default function ThemeSelector({ openSidebar }: { openSidebar: boolean })
                             ${openSidebar ? "px-2" : "px-3"}`}
                         >
                             {themeOption.icon}
-                            <span className={`font-medium ${openSidebar ? "hidden" : "block"}`}>{themeOption.label}</span>
+                            <span className={`font-medium ${openSidebar ? "md:hidden" : "block"}`}>{themeOption.label}</span>
                         </button>
                     );
                 })}

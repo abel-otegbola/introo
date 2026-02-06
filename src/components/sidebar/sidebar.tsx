@@ -37,8 +37,8 @@ function Sidebar() {
     ]
 
     return (
-        <div className={`md:sticky top-0 left-0 h-screen w-0 duration-500 text-[13px] ${open ? "sm:w-[70px]": "sm:w-[250px]"}`}>
-            <button className={`md:absolute fixed sm:top-[18px] top-4 flex flex-col justify-center items-center backdrop-blur-md gap-1 w-5 h-8 z-[50] p-[2px] px-[13px] cursor-pointer rounded-full ${open ? "md:-right-3 right-5" : "right-5"}`} onClick={() => setOpen(!open)}>
+        <div className={`md:sticky top-0 left-0 h-screen w-0 duration-500 text-[14px] ${open ? "sm:w-[70px]": "sm:w-[250px]"}`}>
+            <button className={`md:absolute fixed sm:top-[18px] top-4 flex flex-col justify-center items-center backdrop-blur-md gap-1 w-[38px] h-[38px] z-[50] p-[8px] rounded-full bg-gray-100 dark:bg-gray-500/[0.05] border border-gray-500/[0.1] cursor-pointer rounded-full ${open ? "md:-right-3 right-5" : "right-5"}`} onClick={() => setOpen(!open)}>
                 { open ?
                 <XCircleIcon size={24} color="currentColor" />
                 :
@@ -47,7 +47,7 @@ function Sidebar() {
             </button>
 
             <div  className={`fixed top-0 right-0 md:hidden bg-[#000]/[0.5] duration-300 ${open ? "w-full h-full" : "w-0 h-full"}`} onClick={() => setOpen(false)}></div>
-            <div  className={`flex flex-col justify-between md:h-full bg-white dark:bg-[#000]/[0.2] border-x border-gray-500/[0.1] dark:border-gray-500/[0.2] h-[100vh] md:sticky fixed md:shadow-none shadow-lg md:top-0 top-0 py-4 px-3 right-0 overflow-y-auto overflow-x-hidden z-[5] transition-all duration-700 ${open ? "sm:w-[70px] w-[280px] translate-x-[0px] opacity-[1]": "sm:w-full translate-x-[400px] md:translate-x-[0px] md:opacity-[1] opacity-[0]"}`}>  
+            <div  className={`flex flex-col justify-between md:h-full bg-white dark:bg-[#1C1B24] border-x border-gray-500/[0.1] dark:border-gray-500/[0.2] h-[100vh] md:sticky fixed md:shadow-none shadow-lg md:top-0 top-0 py-4 px-3 right-0 overflow-y-auto overflow-x-hidden z-[5] transition-all duration-700 ${open ? "sm:w-[70px] w-[280px] translate-x-[0px] opacity-[1]": "sm:w-full translate-x-[400px] md:translate-x-[0px] md:opacity-[1] opacity-[0]"}`}>  
                 <Link href={"/"} className={`flex items-center mb-2 h-[38px] ${open ? "sm:px-0 px-4" : "px-[14px]" }`}>
                     <h1 className={`font-bold text-[20px] leading-[32px] tracking-[-1%] ${open ? "" : ""}`}>Pitcher<span className="text-secondary">.</span></h1>
                 </Link>
