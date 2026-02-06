@@ -13,7 +13,7 @@ function AcoountLayout({
     <div className="flex">
         <Sidebar />
         <div className="flex-1">
-            <div className="flex flex-wrap gap-4 justify-between items-center p-3 border-b border-gray-500/[0.1]">
+            <div className="flex flex-wrap sticky top-0 gap-4 justify-between items-center p-3 border-b border-gray-500/[0.1]">
               <span></span>
 
               <div className="flex items-center gap-6">
