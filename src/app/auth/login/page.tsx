@@ -27,7 +27,7 @@ export default function Login() {
               <p className="text-[#7C7E7E] font-medium text-center">Please enter your details</p>
             </div>
 
-            <div className="flex items-center p-1 bg-secondary/[0.09] rounded-[12px]">
+            <div className="flex items-center p-1 bg-gray-500/[0.05] rounded-[12px]">
               {
                 ["Sign in", "Sign up"].map((item, index) => (
                   <Link 
