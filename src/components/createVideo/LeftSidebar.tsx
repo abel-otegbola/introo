@@ -1,5 +1,6 @@
 'use client';
 
+import { CaretDownIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 
 interface Step {
@@ -14,11 +15,9 @@ const steps: Step[] = [
     id: 'story',
     title: 'Story',
     subItems: [
-      'User Bio',
-      'Projects',
+      'Your Bio',
+      'Your Projects',
       'Client Information',
-      'Images Upload',
-      'AI Image Generation'
     ],
     icon: '📝'
   },
@@ -34,7 +33,6 @@ const steps: Step[] = [
     id: 'voice',
     title: 'Voice',
     subItems: [
-      'ElevenLabs Script',
       'Voice Generation',
       'Background Music'
     ],
@@ -45,8 +43,6 @@ const steps: Step[] = [
 export default function LeftSidebar() {
   const [activeStep, setActiveStep] = useState<string>('story');
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['story']));
-  const [videoTitle, setVideoTitle] = useState<string>('Untitled Video');
-  const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
 
   const toggleStep = (stepId: string) => {
     const newExpanded = new Set(expandedSteps);
@@ -58,38 +54,10 @@ export default function LeftSidebar() {
     setExpandedSteps(newExpanded);
   };
 
-  const handleTitleSave = () => {
-    setIsEditingTitle(false);
-  };
-
   return (
-    <div className="w-72 h-screen bg-white dark:bg-[#1a1a1a] border-r border-gray-200 dark:border-gray-800 flex flex-col">
-      {/* Header - Video Title */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-        {isEditingTitle ? (
-          <input
-            type="text"
-            value={videoTitle}
-            onChange={(e) => setVideoTitle(e.target.value)}
-            onBlur={handleTitleSave}
-            onKeyDown={(e) => e.key === 'Enter' && handleTitleSave()}
-            className="w-full px-2 py-1 text-lg font-semibold bg-transparent border-b-2 border-secondary focus:outline-none dark:text-white"
-            autoFocus
-          />
-        ) : (
-          <h2
-            onClick={() => setIsEditingTitle(true)}
-            className="text-lg font-semibold cursor-pointer hover:text-secondary transition-colors dark:text-white"
-          >
-            {videoTitle}
-          </h2>
-        )}
-        <p className="text-xs text-gray-500 mt-1">Click to edit title</p>
-      </div>
-
-      {/* Steps Section */}
+    <div className="w-72 h-full bg-white dark:bg-[#1C1B24] border-r border-gray-200 dark:border-gray-800 flex flex-col">
       <div className="flex-1 overflow-y-auto py-2">
-        <div className="px-3">
+        <div className="px-3 my-6">
           <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-2">
             Steps
           </h3>
@@ -97,20 +65,18 @@ export default function LeftSidebar() {
           <div className="space-y-1">
             {steps.map((step, index) => (
               <div key={step.id} className="relative">
-                {/* Step Header */}
                 <button
                   onClick={() => {
                     setActiveStep(step.id);
                     toggleStep(step.id);
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 group ${
                     activeStep === step.id
-                      ? 'bg-secondary/10 text-secondary dark:bg-secondary/20'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+                      ? 'bg-gray-500/[0.05] text-gray-500 dark:bg-gray-500/20'
+                      : 'hover:bg-gray-500/[0.05] dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-lg">{step.icon}</span>
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 flex items-center justify-center rounded-full text-xs font-medium bg-gray-200 dark:bg-gray-700 dark:text-gray-300">
                         {index + 1}
@@ -120,16 +86,11 @@ export default function LeftSidebar() {
                   </div>
                   
                   {/* Expand/Collapse Icon */}
-                  <svg
+                  <CaretDownIcon
                     className={`w-4 h-4 transition-transform duration-200 ${
-                      expandedSteps.has(step.id) ? 'rotate-90' : ''
+                      expandedSteps.has(step.id) ? 'rotate-180' : ''
                     }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                    />
                 </button>
 
                 {/* Sub-items */}
@@ -145,11 +106,6 @@ export default function LeftSidebar() {
                       </div>
                     ))}
                   </div>
-                )}
-
-                {/* Connection Line */}
-                {index < steps.length - 1 && (
-                  <div className="absolute left-7 top-12 w-0.5 h-4 bg-gray-200 dark:bg-gray-700"></div>
                 )}
               </div>
             ))}

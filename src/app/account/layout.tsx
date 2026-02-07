@@ -14,8 +14,8 @@ function AcoountLayout({
     <div className="flex">
         <Sidebar />
         <div className="flex-1">
-            <div className="flex flex-wrap sticky top-0 gap-4 justify-between items-center p-4 border-b border-gray-500/[0.1]">
-            <span className="md:block hidden"></span>
+            <div className="flex flex-wrap gap-4 justify-between items-center p-4 border-b border-gray-500/[0.1]">
+              <span className="md:block hidden"></span>
               <Link href={"/"} className={`md:hidden flex items-center fill-black dark:fill-white h-[24px]`}>
                   <LogoIcon width={24} />
               </Link>
