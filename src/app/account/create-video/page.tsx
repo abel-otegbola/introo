@@ -18,7 +18,7 @@ export interface Data {
 }
 
 function CreateVideoPage() {
-  const [data, setData] = useState<Data>({ info: "", scenes: [], voice: "", music: "", layout: "1.777789", duration: 40, title: "Untitled Video", zoom: "75" } as Data);
+  const [data, setData] = useState<Data>({ info: "", scenes: [], voice: "", music: "", layout: "0.5625", duration: 30, title: "Untitled Video", zoom: "100" } as Data);
   const [active, setActive] = useState("scenes")
   
   const handleGenerateVideo = () => {
@@ -37,16 +37,19 @@ function CreateVideoPage() {
       <Topbar data={data} setData={setData} />
 
       <div className="flex h-[calc(100vh-120px)]">
-        <LeftSidebar data={data} setData={setData} active={active} setActive={setActive} />
         
-        <div className="flex-1 flex flex-col gap-2 bg-gray-50 dark:bg-[#24222D] overflow-auto">
-          <div className="flex-1 flex h-[calc(100%-180px)] overflow-auto w-full">
-            <div className='flex p-4 justify-center w-full' style={{ transform: `scale(${data.zoom}%)` }}>
-              <div className={`bg-white dark:bg-[#24222D] border border-gray-500/[0.2] mb-2`} style={{ width: `800px`, height: `${800 * Number(data.layout)}px` }}>
+        <div className="flex-1 flex flex-col bg-gray-50 dark:bg-[#24222D] overflow-auto">
+          <div className="flex h-[calc(100%-120px)] ">
+            <LeftSidebar data={data} setData={setData} active={active} setActive={setActive} />
+            <div className="flex-1 flex overflow-auto">
+              <div className='flex p-4 justify-center w-full' style={{ transform: `scale(${data.zoom}%)` }}>
+                <div className={`bg-white dark:bg-[#24222D] border border-gray-500/[0.2]`} style={{ width: `700px`, height: `${700 * Number(data.layout)}px` }}>
 
+                </div>
               </div>
             </div>
           </div>
+
           <div className={`mt-0`}>
           {
             active === "story" ? 

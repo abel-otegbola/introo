@@ -21,7 +21,7 @@ export default function Home() {
         <div className="relative">
           <div className="absolute dark:top-[20%] top-[5%] left-[6%] w-[88%] dark:h-[60%] h-[90%] z-[-1] btn-bg p-2 backdrop-blur-[15px] rounded-[12px] bg-opacity-80 ">
           </div>
-          <Button className="z-2" href="/auth/signup">Get Started for free</Button>
+          <Button className="z-2" href="/account/create-video">Get Started for free</Button>
         </div>
       </section>
     </main>

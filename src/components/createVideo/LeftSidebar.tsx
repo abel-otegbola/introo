@@ -57,6 +57,21 @@ export default function LeftSidebar({ active, setActive }: { data?: Data, setDat
 
   return (
     <div className="w-64 h-full bg-white dark:bg-[#1C1B24] border-r border-gray-200 dark:border-gray-800 flex flex-col">
+      
+      {/* Footer - Progress Indicator */}
+      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-2">
+          <span>Progress</span>
+          <span>1/{steps.length}</span>
+        </div>
+        <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-secondary to-[#D437ED] transition-all duration-300"
+            style={{ width: `${(1 / steps.length) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
       <div className="flex-1 overflow-y-auto py-2">
         <div className="px-3 my-6">
           <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-2">
@@ -114,19 +129,6 @@ export default function LeftSidebar({ active, setActive }: { data?: Data, setDat
         </div>
       </div>
 
-      {/* Footer - Progress Indicator */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-        <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-2">
-          <span>Progress</span>
-          <span>1/{steps.length}</span>
-        </div>
-        <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-secondary to-[#D437ED] transition-all duration-300"
-            style={{ width: `${(1 / steps.length) * 100}%` }}
-          ></div>
-        </div>
-      </div>
     </div>
   );
 }
