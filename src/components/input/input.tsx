@@ -12,9 +12,10 @@ interface inputProps extends InputHTMLAttributes<HTMLInputElement> {
     error?: string | undefined;
     placeholder?: string;
     leftIcon?: ReactNode;
+    inputSize?: "sm" | "md" | "lg";
 }
 
-export default function Input({ className, disabled, label, name, value, type, onChange, error, placeholder, leftIcon, ...props }: inputProps) {
+export default function Input({ className, disabled, label, name, value, type, onChange, error, placeholder, leftIcon, inputSize = "md", ...props }: inputProps) {
     const [focus, setFocus] = useState(false)
     const [show, setShow] = useState(false)
 
@@ -30,7 +31,8 @@ export default function Input({ className, disabled, label, name, value, type, o
             `}>
                 <span className={`${!focus ? "opacity-[0.4]": "text-secondary"} ml-2 ${leftIcon ? "mr-2" : ""}`}>{ leftIcon }</span>
                 <input 
-                    className={`py-[10px] w-full outline-none bg-transparent rounded-[8px]
+                    className={`w-full outline-none bg-transparent rounded-[8px]
+                        ${inputSize === "sm" ? "text-sm py-[0px]" : inputSize === "lg" ? "text-lg py-[12px]" : "text-md py-[10px]"}
                         ${className} 
                         ${disabled ? "opacity-[0.25]" : ""}
                     `}

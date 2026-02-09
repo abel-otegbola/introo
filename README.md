@@ -1,9 +1,9 @@
 # Introo 🎥✨  
 **Turn your portfolio into a personalized pitch that converts**
 
-Introo is a creator-first portfolio and storytelling platform designed to give leads the *best possible first impression*. Instead of static links and screenshots, Introo helps creators generate **short, compelling pitch videos** that explain their work using the **STAR-R framework**, powered by AI-generated visuals and natural voiceovers.
+Introo is a creator-first portfolio and elementstelling platform designed to give leads the *best possible first impression*. Instead of static links and screenshots, Introo helps creators generate **short, compelling pitch videos** that explain their work using the **STAR-R framework**, powered by AI-generated visuals and natural voiceovers.
 
-This project focuses on clarity, storytelling, and conversion — helping creators move from *“Here’s my portfolio”* to *“Let’s talk.”*
+This project focuses on clarity, elementstelling, and conversion — helping creators move from *“Here’s my portfolio”* to *“Let’s talk.”*
 
 ---
 
@@ -19,7 +19,7 @@ Introo allows users to:
 
 ## ✨ Core Features
 
-### 🎯 Project Storytelling (STAR-R)
+### 🎯 Project elementstelling (STAR-R)
 - Situation
 - Task
 - Action
@@ -35,7 +35,7 @@ Guided inputs ensure every project is explained with impact and clarity.
 ### 🧠 AI Logic & Generation
 - **Google Gemini** for:
   - Image generation
-  - Story structuring
+  - elements structuring
   - Content refinement and summaries
 
 ### 🗣️ AI Voice Overs
@@ -146,6 +146,6 @@ MIT License
 
 ## 💜 Final Note
 Introo is not just a portfolio tool.
-It’s a storytelling engine for creators who do real work.
+It’s a elementstelling engine for creators who do real work.
 
 If you build something meaningful with it — you’re already using it right.
