@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { AbsoluteFill, Img, Video, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Data } from '@/app/account/create-video/page';
 import { getAnimationStyle } from '@/helpers/animationHelpers';
@@ -117,22 +118,57 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
 
         if (element.type === 'image') {
           return (
-            <Img
-              key={element.id}
-              src={element.file}
-              style={style}
-            />
+            <React.Fragment key={element.id}>
+              {/* Blurred background */}
+              <Img
+                src={element.file}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  filter: 'blur(40px)',
+                  opacity: (animationStyle.opacity ?? 1) * 0.6,
+                  transform: animationStyle.transform || '',
+                }}
+              />
+              {/* Main image */}
+              <Img
+                src={element.file}
+                style={style}
+              />
+            </React.Fragment>
           );
         }
 
         if (element.type === 'video') {
           return (
-            <Video
-              key={element.id}
-              src={element.file}
-              style={style}
-              startFrom={0}
-            />
+            <React.Fragment key={element.id}>
+              {/* Blurred background */}
+              <Video
+                src={element.file}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  filter: 'blur(40px)',
+                  opacity: (animationStyle.opacity ?? 1) * 0.6,
+                  transform: animationStyle.transform || '',
+                }}
+                startFrom={0}
+              />
+              {/* Main video */}
+              <Video
+                src={element.file}
+                style={style}
+                startFrom={0}
+              />
+            </React.Fragment>
           );
         }
 

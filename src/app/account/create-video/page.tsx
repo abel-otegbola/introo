@@ -6,7 +6,7 @@ import Topbar from '@/components/createVideo/Topbar';
 import { VideoComposition } from '@/components/createVideo/VideoComposition';
 import AIGeneratorModal, { ProjectInfo } from '@/components/aiGenerator/AIGeneratorModal';
 import VideoExportModal, { ExportSettings } from '@/components/videoExport/VideoExportModal';
-import { generateVideoElements, createSVGBarChart, createSVGPieChart, createStyledSVGText } from '@/lib/gemini';
+import { generateVideoElements } from '@/lib/gemini';
 import { Player, PlayerRef } from '@remotion/player';
 import { useState, useRef, useEffect } from 'react';
 
@@ -103,38 +103,11 @@ function CreateVideoPage() {
           rotation: 0,
         };
 
-        // Handle SVG text elements
-        if (aiEl.type === 'svg' && !aiEl.svgContent) {
-          // Generate styled SVG text
-          const svgContent = createStyledSVGText(
-            aiEl.content,
-            aiEl.svgTextStyle || 'modern',
-            aiEl.fontSize || 48,
-            aiEl.color || '#8263F4',
-            aiEl.textAlign as 'left' | 'center' | 'right' || 'center',
-            aiEl.fontWeight || 'bold'
-          );
-          
+        // Handle SVG elements - trust Gemini-generated SVG completely
+        if (aiEl.type === 'svg' && aiEl.svgContent) {
           return {
             ...baseElement,
-            svgContent,
-          };
-        } else if (aiEl.type === 'svg' && aiEl.svgContent) {
-          // Chart or custom SVG content
-          let svgContent = aiEl.svgContent;
-          
-          if (!svgContent && projectInfo.keyMetrics && projectInfo.keyMetrics.length > 0) {
-            // Generate chart from metrics if no content provided
-            if (aiEl.content.toLowerCase().includes('pie')) {
-              svgContent = createSVGPieChart(projectInfo.keyMetrics);
-            } else {
-              svgContent = createSVGBarChart(projectInfo.keyMetrics);
-            }
-          }
-          
-          return {
-            ...baseElement,
-            svgContent,
+            svgContent: aiEl.svgContent,
           };
         } else if (aiEl.type === 'image' || aiEl.type === 'video') {
           // Handle uploaded media files
@@ -149,22 +122,6 @@ function CreateVideoPage() {
             };
           }
           return baseElement;
-        } else if (aiEl.type === 'text') {
-          // Legacy text support - convert to SVG
-          const svgContent = createStyledSVGText(
-            aiEl.content,
-            'modern',
-            aiEl.fontSize || 48,
-            aiEl.color || '#8263F4',
-            aiEl.textAlign as 'left' | 'center' | 'right' || 'center',
-            aiEl.fontWeight || 'bold'
-          );
-          
-          return {
-            ...baseElement,
-            type: 'svg',
-            svgContent,
-          };
         }
 
         return baseElement;
