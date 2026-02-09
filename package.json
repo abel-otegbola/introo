@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "remotion:studio": "remotion studio",
+    "remotion:render": "remotion render src/components/createVideo/VideoComposition.tsx VideoComposition out/video.mp4"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@phosphor-icons/react": "^2.1.10",
+    "@remotion/bundler": "^4.0.419",
     "@remotion/player": "^4.0.419",
+    "@remotion/renderer": "^4.0.419",
     "@uiw/react-color": "^2.9.4",
     "firebase": "^12.7.0",
     "formik": "^2.4.9",

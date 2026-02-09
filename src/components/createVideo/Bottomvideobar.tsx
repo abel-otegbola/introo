@@ -97,7 +97,7 @@ export default function Bottomvideobar({ data, setData, selectedElementId, setSe
                 <span className="w-[20%]">-</span>
                 <span className="w-[20%]">-</span>
                 <span className="w-[20%]">-</span>
-                <span className="w-[20%]">{(i + 1) * divider}</span>
+                <span className="w-[20%]">{Number(((i + 1) * divider).toFixed(2))}</span>
               </div>
             ))}
           </div>

@@ -1,10 +1,10 @@
 'use client';
 
 import { Data } from "@/app/account/create-video/page";
-import { CaretDownIcon, ExportIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, ExportIcon, SparkleIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 
-export default function Topbar({ data, setData }: { data: Data, setData: (data: Data) => void }) {
+export default function Topbar({ data, setData, onOpenAIGenerator, onOpenExport }: { data: Data, setData: (data: Data) => void, onOpenAIGenerator?: () => void, onOpenExport?: () => void }) {
   const [openZoomDropdown, setOpenZoomDropdown] = useState(false);
 
   return (
@@ -12,6 +12,15 @@ export default function Topbar({ data, setData }: { data: Data, setData: (data: 
         <div className="flex items-center gap-2 pl-2 min-w-[180px] text-[13px]">
           <button className='px-3 py-2 rounded border border-gray-500/[0.07]'> File</button>
           <button className='px-3 py-2 rounded border border-gray-500/[0.07]'> Edit</button>
+          {onOpenAIGenerator && (
+            <button 
+              onClick={onOpenAIGenerator}
+              className='px-3 py-2 rounded border border-secondary bg-secondary/10 text-secondary hover:bg-secondary/20 transition-colors flex items-center gap-2'
+            >
+              <SparkleIcon size={16} weight="fill" />
+              AI Generate
+            </button>
+          )}
         </div>
         <div className="">
           <input
@@ -40,7 +49,12 @@ export default function Topbar({ data, setData }: { data: Data, setData: (data: 
               </div>
             )
           }
-          <button className='flex items-center gap-2 bg-secondary px-6 py-4 text-white'> <ExportIcon /> Export</button>
+          <button 
+            onClick={onOpenExport}
+            className='flex items-center gap-2 bg-secondary px-6 py-4 text-white hover:bg-secondary/90 transition-colors'
+          > 
+            <ExportIcon /> Export
+          </button>
         </div>
       </div>
   );

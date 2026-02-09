@@ -21,7 +21,8 @@ export const createImageVideoElement = (file: File) => {
     position: {
       x: 0,
       y: 0
-    }
+    },
+    rotation: 0,
   };
 };
 
@@ -47,6 +48,7 @@ export const createTextElement = (existingTextCount: number) => {
     color: '#000000',
     backgroundColor: 'transparent',
     textAlign: 'center',
+    rotation: 0,
   };
 };
 
@@ -61,7 +63,7 @@ export const updateElementProperty = (
   data: Data,
   elementId: number,
   property: string,
-  value: string | number
+  value: string | number | { x: number; y: number }
 ): Data => {
   return {
     ...data,

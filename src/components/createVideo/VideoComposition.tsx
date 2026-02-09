@@ -47,6 +47,14 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
             ? `${combinedTransform} scale(${baseScale})`
             : `scale(${baseScale})`;
         }
+        
+        // Add rotation
+        const rotation = element.rotation || 0;
+        if (rotation !== 0) {
+          combinedTransform = combinedTransform 
+            ? `${combinedTransform} rotate(${rotation}deg)`
+            : `rotate(${rotation}deg)`;
+        }
 
         const style: React.CSSProperties = {
           position: 'absolute',
@@ -83,6 +91,23 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
             >
               {element.text || 'Your Text Here'}
             </div>
+          );
+        }
+
+        // Render SVG element
+        if (element.type === 'svg' && element.svgContent) {
+          return (
+            <div
+              key={element.id}
+              style={{
+                position: 'absolute',
+                top: element.position?.y || 0,
+                left: element.position?.x || 0,
+                opacity: animationStyle.opacity ?? 1,
+                transform: combinedTransform,
+              }}
+              dangerouslySetInnerHTML={{ __html: element.svgContent }}
+            />
           );
         }
 

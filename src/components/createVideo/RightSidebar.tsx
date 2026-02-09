@@ -20,7 +20,7 @@ export default function RightSidebar({ data, setData, selectedElementId, setSele
     setData(updateElementAnimation(data, elementId, newAnimation));
   };
 
-  const handleElementPropertyChange = (elementId: number, property: string, value: string | number) => {
+  const handleElementPropertyChange = (elementId: number, property: string, value: string | number | { x: number; y: number }) => {
     setData(updateElementProperty(data, elementId, property, value));
   };
 
@@ -32,7 +32,15 @@ export default function RightSidebar({ data, setData, selectedElementId, setSele
           {
             selectedElementId === null ?
           <>
-            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-2">
+
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-2 mt-6">
+              Project Info
+            </h3>
+            <div className="p-2 border border-gray-500/[0.1] rounded-[12px] p-2">
+              <textarea className='leading-[130%] h-[80px] w-full focus:outline-none p-1' value={data.info} onChange={(e) => setData({ ...data, info: e.target.value })} placeholder='Describe your team, client information and relevant projects.'/>
+            </div>
+
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-2 mt-6">
               Layout
             </h3>
 
@@ -48,7 +56,8 @@ export default function RightSidebar({ data, setData, selectedElementId, setSele
               Duration (in seconds)
             </h3>
 
-            <Input inputSize={"sm"} value={data.duration} type="number" min={0} max={300} step={10} onChange={(e) => setData({ ...data, duration: +e.target.value })} />
+            <Input inputSize={"sm"} value={data.duration} type="number" min={0} max={300} step={5} onChange={(e) => setData({ ...data, duration: (+e.target.value < 1 ? 1 : +e.target.value) })} />
+
           </>
           : ""
           }
@@ -123,6 +132,44 @@ export default function RightSidebar({ data, setData, selectedElementId, setSele
                         max={200} 
                         onChange={(e) => handleElementPropertyChange(selectedElement.id, 'zoom', e.target.value)} 
                       />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Position X</label>
+                        <Input 
+                          inputSize={"sm"}
+                          value={selectedElement.position?.x || 0} 
+                          type="number" 
+                          onChange={(e) => handleElementPropertyChange(selectedElement.id, 'position', { 
+                            x: +e.target.value, 
+                            y: selectedElement.position?.y || 0 
+                          })} 
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Position Y</label>
+                        <Input 
+                          inputSize={"sm"}
+                          value={selectedElement.position?.y || 0} 
+                          type="number" 
+                          onChange={(e) => handleElementPropertyChange(selectedElement.id, 'position', { 
+                            x: selectedElement.position?.x || 0, 
+                            y: +e.target.value 
+                          })} 
+                        />
+                      </div>                      
+                      <div>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Rotation</label>
+                        <Input 
+                          inputSize={"sm"}
+                          value={selectedElement.rotation || 0} 
+                          type="number" 
+                          min={-360} 
+                          max={360} 
+                          onChange={(e) => handleElementPropertyChange(selectedElement.id, 'rotation', +e.target.value)} 
+                        />
+                    </div>
                     </div>
 
                     {/* Text-specific properties */}
