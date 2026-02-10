@@ -3,14 +3,20 @@ import { Data } from "@/app/account/create-video/page";
 export const createImageVideoElement = (file: File) => {
   const fileType = file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'video' : null;
   
+  console.log('Creating element:', file.name, 'type:', file.type, 'detected as:', fileType);
+  
   if (!fileType) {
+    console.error('Unsupported file type:', file.type);
     return null;
   }
+
+  const blobUrl = URL.createObjectURL(file);
+  console.log('Created blob URL:', blobUrl);
 
   return {
     id: Date.now(),
     title: file.name,
-    file: URL.createObjectURL(file),
+    file: blobUrl,
     type: fileType,
     duration: 5,
     animation: 'fade',

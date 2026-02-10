@@ -239,16 +239,40 @@ function CreateVideoPage() {
   const handleExportVideo = async (settings: ExportSettings) => {
     setIsExporting(true);
     try {
-      // Save video data to localStorage for CLI rendering
+      // Create export data with metadata only (not blob URLs)
       const exportData = {
-        data,
+        metadata: {
+          title: data.title,
+          duration: data.duration,
+          layout: data.layout,
+          zoom: data.zoom,
+        },
+        elements: data.elements.map(el => ({
+          id: el.id,
+          title: el.title,
+          type: el.type,
+          duration: el.duration,
+          animation: el.animation,
+          start: el.start,
+          position: el.position,
+          // Text properties
+          text: el.text,
+          fontSize: el.fontSize,
+          fontWeight: el.fontWeight,
+          color: el.color,
+          backgroundColor: el.backgroundColor,
+          textAlign: el.textAlign,
+          rotation: el.rotation,
+          zoom: el.zoom,
+          // Note: file data (blob URLs) cannot be exported
+          // Files need to be uploaded separately for rendering
+        })),
         settings,
         timestamp: new Date().toISOString(),
+        note: 'Media files (images/videos) are stored as temporary blob URLs and cannot be exported. Please re-upload media files when importing this project.',
       };
       
-      localStorage.setItem('videoExportData', JSON.stringify(exportData));
-      
-      // Download project data as JSON for Remotion CLI
+      // Download project data as JSON
       const dataStr = JSON.stringify(exportData, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = window.URL.createObjectURL(dataBlob);
@@ -263,7 +287,7 @@ function CreateVideoPage() {
       setIsExportModalOpen(false);
       
       // Show instructions
-      alert(`Project data saved! 📁\n\nTo render your video:\n1. Download completed ✓\n2. Run: npx remotion render\n3. Or use Remotion Studio: npx remotion studio\n\nFor cloud rendering, consider Remotion Lambda.`);
+      alert(`Project metadata exported! 📁\n\nNote: Media files cannot be exported due to size limitations.\nYou can continue editing in this session or use Remotion's built-in rendering.\n\nTo render directly:\n• Click the browser's built-in video export\n• Or use screen recording software`);
     } catch (error) {
       console.error('Export error:', error);
       alert(`Failed to export project: ${error instanceof Error ? error.message : 'Unknown error'}`);

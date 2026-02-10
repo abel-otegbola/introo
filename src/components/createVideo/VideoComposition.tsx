@@ -113,7 +113,7 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
         }
 
         if (!element.file) {
-          console.warn('Element has no file:', element);
+          console.warn('Element has no file:', element.type, element.title);
           return null;
         }
 
@@ -146,6 +146,33 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
         }
 
         if (element.type === 'video') {
+          console.log('Rendering video:', element.title, 'src:', element.file?.substring(0, 50));
+          
+          // Check if video source is valid
+          if (!element.file || element.file.length === 0) {
+            return (
+              <div
+                key={element.id}
+                style={{
+                  position: 'absolute',
+                  top: element.position?.y || 0,
+                  left: element.position?.x || 0,
+                  width: '200px',
+                  height: '100px',
+                  backgroundColor: '#f0f0f0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  color: '#666',
+                  border: '2px dashed #ccc',
+                }}
+              >
+                Video not loaded
+              </div>
+            );
+          }
+          
           return (
             <React.Fragment key={element.id}>
               {/* Blurred background */}
@@ -164,7 +191,7 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
                 }}
                 startFrom={0}
                 endAt={durationFrames}
-                pauseWhenBuffering
+                volume={0}
               />
               {/* Main video */}
               <Video
@@ -172,7 +199,7 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
                 style={style}
                 startFrom={0}
                 endAt={durationFrames}
-                pauseWhenBuffering
+                volume={1}
               />
             </React.Fragment>
           );
