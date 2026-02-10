@@ -1,7 +1,7 @@
 'use client';
 
 import { Data } from '@/app/account/create-video/page';
-import { ImageIcon, TextTIcon, TrashIcon, VideoIcon } from '@phosphor-icons/react';
+import { ImageIcon, TextTIcon, TrashIcon, VideoIcon, DotsSixVertical } from '@phosphor-icons/react';
 import { useState } from 'react';
 import Input from '../input/input';
 import { createImageVideoElement, createTextElement, deleteElement } from '@/helpers/elementHelpers';
@@ -27,6 +27,8 @@ export default function LeftSidebar({ active, setActive, data, setData, selected
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['video']));
   const [selectedVoice, setSelectedVoice] = useState<VoiceOption>('Kore');
   const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
+  const [draggedElement, setDraggedElement] = useState<number | null>(null);
+  const [dragOverElement, setDragOverElement] = useState<number | null>(null);
 
   const toggleStep = (stepId: string) => {
     const newExpanded = new Set(expandedSteps);
@@ -123,6 +125,47 @@ export default function LeftSidebar({ active, setActive, data, setData, selected
     }
   };
 
+  const handleDragStart = (elementId: number) => {
+    setDraggedElement(elementId);
+  };
+
+  const handleDragOver = (e: React.DragEvent, elementId: number) => {
+    e.preventDefault();
+    setDragOverElement(elementId);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetElementId: number) => {
+    e.preventDefault();
+    
+    if (draggedElement === null || draggedElement === targetElementId) {
+      setDraggedElement(null);
+      setDragOverElement(null);
+      return;
+    }
+
+    const draggedIndex = data.elements.findIndex(el => el.id === draggedElement);
+    const targetIndex = data.elements.findIndex(el => el.id === targetElementId);
+
+    if (draggedIndex === -1 || targetIndex === -1) return;
+
+    const newElements = [...data.elements];
+    const [removed] = newElements.splice(draggedIndex, 1);
+    newElements.splice(targetIndex, 0, removed);
+
+    setData({
+      ...data,
+      elements: newElements,
+    });
+
+    setDraggedElement(null);
+    setDragOverElement(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedElement(null);
+    setDragOverElement(null);
+  };
+
 
   return (
     <div className="w-64 h-full bg-white dark:bg-[#1C1B24] border-r border-gray-200 dark:border-gray-800 flex flex-col">
@@ -166,21 +209,46 @@ export default function LeftSidebar({ active, setActive, data, setData, selected
               <div className="space-y-[2px]">
                 {data && data.elements.map((element) => (
                   <div 
-                    key={element.id} 
-                    className={`flex items-center gap-2 text-[12px] p-2 justify-between rounded cursor-pointer transition-colors ${
+                    key={element.id}
+                    draggable
+                    onDragStart={() => handleDragStart(element.id)}
+                    onDragOver={(e) => handleDragOver(e, element.id)}
+                    onDrop={(e) => handleDrop(e, element.id)}
+                    onDragEnd={handleDragEnd}
+                    className={`flex items-center gap-2 text-[12px] p-2 justify-between rounded cursor-move transition-all ${
                       selectedElementId === element.id 
                         ? 'bg-gray-50 dark:bg-secondary/20' 
                         : 'hover:bg-gray-50 dark:hover:bg-secondary/[0.1]'
+                    } ${
+                      draggedElement === element.id 
+                        ? 'opacity-50' 
+                        : ''
+                    } ${
+                      dragOverElement === element.id && draggedElement !== element.id
+                        ? 'border-t-2 border-secondary' 
+                        : ''
                     }`}
                     onClick={() => setSelectedElementId(element.id)}
                   >
                     <div className='flex items-center w-[90%] gap-2'>
+                      <DotsSixVertical 
+                        size={16} 
+                        className="text-gray-400 cursor-grab active:cursor-grabbing flex-shrink-0" 
+                        weight="bold"
+                      />
                       {
                         element.type === 'text' ? <TextTIcon size={16} /> : element.type === 'image' ? <ImageIcon size={16} /> : <VideoIcon size={16} />
                       }
                       <div className="font-medium truncate mt-1 w-[80%]">{element.title}</div>
                     </div>
-                    <button onClick={() => handleDeleteElement(element.id)}><TrashIcon className="text-gray-300 text-right hover:text-red-500 cursor-pointer" /></button>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteElement(element.id);
+                      }}
+                    >
+                      <TrashIcon className="text-gray-300 text-right hover:text-red-500 cursor-pointer" />
+                    </button>
                   </div>
                 ))}
               </div>

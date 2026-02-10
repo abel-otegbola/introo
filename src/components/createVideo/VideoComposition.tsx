@@ -163,12 +163,16 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
                   transform: animationStyle.transform || '',
                 }}
                 startFrom={0}
+                endAt={durationFrames}
+                pauseWhenBuffering
               />
               {/* Main video */}
               <Video
                 src={element.file}
                 style={style}
                 startFrom={0}
+                endAt={durationFrames}
+                pauseWhenBuffering
               />
             </React.Fragment>
           );
@@ -180,18 +184,26 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
       {/* Voice narration audio */}
       {data.voice && (
         <Audio
+          key={`voice-${data.voice}`}
           src={data.voice}
           startFrom={0}
+          endAt={data.duration * fps}
           volume={1}
+          playbackRate={1}
+          pauseWhenBuffering
         />
       )}
       
       {/* Background music */}
       {data.music && (
         <Audio
+          key={`music-${data.music}`}
           src={data.music}
           startFrom={0}
+          endAt={data.duration * fps}
           volume={0.3}
+          playbackRate={1}
+          pauseWhenBuffering
         />
       )}
     </AbsoluteFill>

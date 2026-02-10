@@ -311,6 +311,10 @@ function CreateVideoPage() {
                       data: data,
                     }}
                     controls
+                    loop={false}
+                    clickToPlay={true}
+                    doubleClickToFullscreen={false}
+                    spaceKeyToPlayOrPause={true}
                   />
                   {/* Interactive overlay for editing */}
                   <div className="absolute inset-0 pointer-events-none">
