@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AbsoluteFill, Img, Video, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill, Audio, Img, Video, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Data } from '@/app/account/create-video/page';
 import { getAnimationStyle } from '@/helpers/animationHelpers';
 
@@ -113,10 +113,12 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
         }
 
         if (!element.file) {
+          console.warn('Element has no file:', element);
           return null;
         }
 
         if (element.type === 'image') {
+          console.log('Rendering image:', element.title, 'file length:', element.file.length);
           return (
             <React.Fragment key={element.id}>
               {/* Blurred background */}
@@ -174,6 +176,24 @@ export const VideoComposition: React.FC<VideoCompositionProps> = ({ data }) => {
 
         return null;
       })}
+      
+      {/* Voice narration audio */}
+      {data.voice && (
+        <Audio
+          src={data.voice}
+          startFrom={0}
+          volume={1}
+        />
+      )}
+      
+      {/* Background music */}
+      {data.music && (
+        <Audio
+          src={data.music}
+          startFrom={0}
+          volume={0.3}
+        />
+      )}
     </AbsoluteFill>
   );
 };

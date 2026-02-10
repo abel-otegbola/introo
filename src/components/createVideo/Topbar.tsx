@@ -9,9 +9,7 @@ export default function Topbar({ data, setData, onOpenAIGenerator, onOpenExport 
 
   return (
     <div className="flex flex-wrap gap-4 w-full justify-between bg-white dark:bg-[#1C1B24] items-center border-b border-gray-500/[0.1]">
-        <div className="flex items-center gap-2 pl-2 min-w-[180px] text-[13px]">
-          <button className='px-3 py-2 rounded border border-gray-500/[0.07]'> File</button>
-          <button className='px-3 py-2 rounded border border-gray-500/[0.07]'> Edit</button>
+        <div className="flex items-center gap-2 pl-[6px] min-w-[180px] text-[13px]">
           {onOpenAIGenerator && (
             <button 
               onClick={onOpenAIGenerator}

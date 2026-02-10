@@ -6,7 +6,7 @@ import Topbar from '@/components/createVideo/Topbar';
 import { VideoComposition } from '@/components/createVideo/VideoComposition';
 import AIGeneratorModal, { ProjectInfo } from '@/components/aiGenerator/AIGeneratorModal';
 import VideoExportModal, { ExportSettings } from '@/components/videoExport/VideoExportModal';
-import { generateVideoElements } from '@/lib/gemini';
+import { generateImageWithGemini } from '@/lib/gemini';
 import { Player, PlayerRef } from '@remotion/player';
 import { useState, useRef, useEffect } from 'react';
 
@@ -19,9 +19,22 @@ export interface Data {
   duration: number;
   title: string;
   zoom: string;
+  // Project info for voice generation
+  projectInfo?: {
+    projectName: string;
+    projectDescription: string;
+    bio: string;
+    clientInfo: string;
+    keyMetrics?: {
+      label: string;
+      value: number;
+    }[];
+    additionalInfo?: string;
+  };
   elements: {
     id: number;
     title: string;
+    content?: string; // Description for voice narration
     file: string | null;
     type: string;
     duration: number;
@@ -61,6 +74,7 @@ function CreateVideoPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isGeneratingMore, setIsGeneratingMore] = useState(false);
 
   const handleGenerateAudio = () => {
     // Mock data generation - replace with actual API call
@@ -70,82 +84,155 @@ function CreateVideoPage() {
   const handleAIGenerate = async (projectInfo: ProjectInfo) => {
     setIsGenerating(true);
     try {
-      // Include already uploaded elements in the project info
-      const uploadedElements = data.elements
-        .filter(el => el.type === 'image' || el.type === 'video')
-        .map(el => ({
-          type: el.type as 'image' | 'video',
-          file: el.file || '',
-          title: el.title,
-        }));
+      // Generate images and text elements using Gemini 3 Pro Image Preview
+      const aiElements = await generateImageWithGemini(projectInfo);
+        
+        // Convert AI elements to our element format
+        const newElements = aiElements.map((aiEl, index) => {
+          const baseElement = {
+            id: Date.now() + index,
+            title: aiEl.title,
+            content: aiEl.content, // Description for voice narration
+            file: aiEl.file || null,
+            type: aiEl.type,
+            duration: aiEl.duration,
+            animation: aiEl.animation,
+            transition: 'fade',
+            delay: 0,
+            zoom: '100',
+            start: aiEl.start,
+            position: aiEl.position,
+            rotation: 0,
+          };
 
-      const enrichedProjectInfo = {
-        ...projectInfo,
-        uploadedElements: uploadedElements.length > 0 ? uploadedElements : undefined,
+          // Handle SVG elements
+          if (aiEl.type === 'svg' && aiEl.svgContent) {
+            return {
+              ...baseElement,
+              svgContent: aiEl.svgContent,
+            };
+          }
+
+          return baseElement;
+        });
+
+        // Calculate total duration
+        const maxEndTime = Math.max(...newElements.map(el => (el.start || 0) + el.duration));
+        const newDuration = Math.ceil(maxEndTime);
+
+        setData({
+          ...data,
+          title: projectInfo.projectName,
+          info: projectInfo.projectDescription,
+          duration: newDuration,
+          elements: newElements,
+          projectInfo: {
+            projectName: projectInfo.projectName,
+            projectDescription: projectInfo.projectDescription,
+            bio: projectInfo.bio,
+            clientInfo: projectInfo.clientInfo,
+            keyMetrics: projectInfo.keyMetrics,
+            additionalInfo: projectInfo.additionalInfo,
+          },
+        });
+
+        setIsAIModalOpen(false);
+      alert(`Generated ${aiElements.length} elements successfully! 🎉`);
+    } catch (error) {
+      console.error('Error generating video:', error);
+      alert('Failed to generate video. Please check your API key and try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleGenerateMore = async () => {
+    if (!data.info.trim()) {
+      alert('Please enter a prompt in the Project Info field');
+      return;
+    }
+
+    setIsGeneratingMore(true);
+    try {
+      // Use existing project info or create from current data
+      const projectInfo: ProjectInfo = data.projectInfo ? {
+        projectName: data.projectInfo.projectName,
+        projectDescription: data.projectInfo.projectDescription,
+        bio: data.projectInfo.bio,
+        clientInfo: data.projectInfo.clientInfo,
+        keyMetrics: data.projectInfo.keyMetrics,
+        additionalInfo: data.projectInfo.additionalInfo,
+      } : {
+        projectName: data.title || 'New Content',
+        projectDescription: data.info,
+        bio: '',
+        clientInfo: '',
       };
 
-      const aiElements = await generateVideoElements(enrichedProjectInfo);
+      // Generate new elements
+      const aiElements = await generateImageWithGemini(projectInfo);
       
-      // Convert AI elements to our element format
+      // Get the current end time of existing elements
+      const currentEndTime = data.elements.length > 0 
+        ? Math.max(...data.elements.map(el => (el.start || 0) + el.duration))
+        : 0;
+
+      // Convert AI elements and adjust start times to append after existing content
       const newElements = aiElements.map((aiEl, index) => {
         const baseElement = {
           id: Date.now() + index,
           title: aiEl.title,
-          file: null,
+          content: aiEl.content, // Description for voice narration
+          file: aiEl.file || null,
           type: aiEl.type,
           duration: aiEl.duration,
           animation: aiEl.animation,
           transition: 'fade',
           delay: 0,
           zoom: '100',
-          start: aiEl.start,
+          start: currentEndTime + aiEl.start, // Offset by current end time
           position: aiEl.position,
           rotation: 0,
         };
 
-        // Handle SVG elements - trust Gemini-generated SVG completely
+        // Handle SVG elements
         if (aiEl.type === 'svg' && aiEl.svgContent) {
           return {
             ...baseElement,
             svgContent: aiEl.svgContent,
           };
-        } else if (aiEl.type === 'image' || aiEl.type === 'video') {
-          // Handle uploaded media files
-          const fileIndex = parseInt(aiEl.file || '0');
-          const uploadedFile = uploadedElements[fileIndex];
-          
-          if (uploadedFile) {
-            return {
-              ...baseElement,
-              file: uploadedFile.file,
-              type: uploadedFile.type,
-            };
-          }
-          return baseElement;
         }
 
         return baseElement;
       });
 
-      // Update video duration to accommodate all elements
-      const maxEndTime = Math.max(...newElements.map(el => (el.start || 0) + el.duration));
-      const newDuration = Math.ceil(maxEndTime) + 2; // Add 2 seconds buffer
+      // Append new elements to existing ones
+      const allElements = [...data.elements, ...newElements];
+      
+      // Calculate new total duration
+      const maxEndTime = Math.max(...allElements.map(el => (el.start || 0) + el.duration));
+      const newDuration = Math.ceil(maxEndTime);
 
       setData({
         ...data,
-        title: projectInfo.projectName,
-        info: projectInfo.projectDescription,
         duration: newDuration,
-        elements: newElements,
+        elements: allElements,
+        projectInfo: data.projectInfo || {
+          projectName: projectInfo.projectName,
+          projectDescription: projectInfo.projectDescription,
+          bio: projectInfo.bio,
+          clientInfo: projectInfo.clientInfo,
+          keyMetrics: projectInfo.keyMetrics,
+          additionalInfo: projectInfo.additionalInfo,
+        },
       });
 
-      setIsAIModalOpen(false);
-      alert('Video elements generated successfully! 🎉');
+      alert(`Added ${aiElements.length} new elements! 🎨`);
     } catch (error) {
-      console.error('Error generating video:', error);
-      alert('Failed to generate video. Please check your API key and try again.');
+      console.error('Error generating more content:', error);
+      alert('Failed to generate content. Please check your API key and try again.');
     } finally {
-      setIsGenerating(false);
+      setIsGeneratingMore(false);
     }
   };
 
@@ -361,7 +448,7 @@ function CreateVideoPage() {
 
           <div className={`mt-0`}>
           {
-            active === "elements" || active === "video" ?            
+            active === "video" || active === "voice" ?            
             <Bottomvideobar data={data} setData={setData} handleGenerateAudio={handleGenerateAudio} currentFrame={currentFrame} playerRef={playerRef} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} />
             :
             ""
@@ -369,7 +456,7 @@ function CreateVideoPage() {
           </div>
         </div>
         
-        <RightSidebar data={data} setData={setData} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} />
+        <RightSidebar data={data} setData={setData} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} onGenerateMore={handleGenerateMore} isGenerating={isGeneratingMore} />
       </div>
 
       {/* AI Generator Modal */}

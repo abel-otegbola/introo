@@ -6,11 +6,12 @@ import Input from "../input/input";
 import { animationTypes } from "@/constants/animations";
 import { useOutsideClick } from "@/customHooks/useOutsideClick";
 import { updateElementAnimation, updateElementProperty } from "@/helpers/elementHelpers";
-import { TextAlignCenterIcon, TextAlignLeftIcon, TextAlignRightIcon } from "@phosphor-icons/react";
+import { SpinnerIcon, TextAlignCenterIcon, TextAlignLeftIcon, TextAlignRightIcon } from "@phosphor-icons/react";
 import { Sketch } from '@uiw/react-color';
 import { useState } from 'react';
+import Button from "../button/Button";
 
-export default function RightSidebar({ data, setData, selectedElementId, setSelectedElementId }: { data: Data, setData: (data: Data) => void, selectedElementId: number | null, setSelectedElementId: (id: number | null) => void }) {
+export default function RightSidebar({ data, setData, selectedElementId, setSelectedElementId, onGenerateMore, isGenerating }: { data: Data, setData: (data: Data) => void, selectedElementId: number | null, setSelectedElementId: (id: number | null) => void, onGenerateMore?: () => void, isGenerating?: boolean }) {
   const selectedElement = data.elements.find(el => el.id === selectedElementId);
   const rightbarRef = useOutsideClick(setSelectedElementId, null);
   const [showTextColorPicker, setShowTextColorPicker] = useState(false);
@@ -37,8 +38,28 @@ export default function RightSidebar({ data, setData, selectedElementId, setSele
               Project Info
             </h3>
             <div className="p-2 border border-gray-500/[0.1] rounded-[12px] p-2">
-              <textarea className='leading-[130%] h-[80px] w-full focus:outline-none p-1' value={data.info} onChange={(e) => setData({ ...data, info: e.target.value })} placeholder='Describe your team, client information and relevant projects.'/>
+              <textarea className='leading-[130%] h-[80px] w-full focus:outline-none p-1' value={data.info} onChange={(e) => setData({ ...data, info: e.target.value })} placeholder='Describe what you want to generate. AI will create images and text based on this prompt.'/>
             </div>
+            
+            {onGenerateMore && (
+              <Button
+                onClick={onGenerateMore}
+                disabled={isGenerating || !data.info.trim()}
+                className="w-full mt-4 flex items-center justify-center gap-2"
+              >
+                {isGenerating ? (
+                  <>
+                    <SpinnerIcon className="animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <span>✨</span>
+                    Generate Content
+                  </>
+                )}
+              </Button>
+            )}
 
             <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-2 mt-6">
               Layout

@@ -5,6 +5,7 @@ import { ImageIcon, TextTIcon, TrashIcon, VideoIcon } from '@phosphor-icons/reac
 import { useState } from 'react';
 import Input from '../input/input';
 import { createImageVideoElement, createTextElement, deleteElement } from '@/helpers/elementHelpers';
+import { generateVoiceNarration, VoiceOption } from '@/lib/gemini';
 
 interface Step {
   id: string;
@@ -24,6 +25,8 @@ const steps: Step[] = [
 
 export default function LeftSidebar({ active, setActive, data, setData, selectedElementId, setSelectedElementId }: { data: Data, setData: (data: Data) => void, active: string, setActive: (active: string) => void, selectedElementId: number | null, setSelectedElementId: (id: number | null) => void }) {
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set(['video']));
+  const [selectedVoice, setSelectedVoice] = useState<VoiceOption>('Kore');
+  const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
 
   const toggleStep = (stepId: string) => {
     const newExpanded = new Set(expandedSteps);
@@ -70,6 +73,54 @@ export default function LeftSidebar({ active, setActive, data, setData, selected
 
   const handleDeleteElement = (elementId: number) => {
     setData(deleteElement(data, elementId));
+  };
+
+  const handleGenerateVoice = async () => {
+    if (data.elements.length === 0) {
+      alert('Please add some elements first before generating voice narration');
+      return;
+    }
+
+    setIsGeneratingVoice(true);
+    try {
+      // Convert data elements to AIGeneratedElement format
+      const elementsForVoice = data.elements.map(el => ({
+        type: el.type as 'text' | 'svg' | 'image' | 'video',
+        content: el.content || el.text || el.title,
+        title: el.title,
+        duration: el.duration,
+        start: el.start || 0,
+        animation: el.animation,
+        position: el.position || { x: 0, y: 0 },
+        svgContent: el.svgContent,
+        file: el.file || undefined,
+      }));
+
+      const voiceResult = await generateVoiceNarration(
+        elementsForVoice, 
+        selectedVoice,
+        data.projectInfo ? {
+          projectName: data.projectInfo.projectName,
+          projectDescription: data.projectInfo.projectDescription,
+          bio: data.projectInfo.bio,
+          clientInfo: data.projectInfo.clientInfo,
+          keyMetrics: data.projectInfo.keyMetrics,
+          additionalInfo: data.projectInfo.additionalInfo,
+        } : undefined
+      );
+      
+      setData({
+        ...data,
+        voice: voiceResult.audioUrl,
+      });
+
+      alert(`Voice narration generated successfully with ${selectedVoice} voice! 🎙️`);
+    } catch (error) {
+      console.error('Error generating voice:', error);
+      alert('Failed to generate voice. Please check your API key and try again.');
+    } finally {
+      setIsGeneratingVoice(false);
+    }
   };
 
 
@@ -151,6 +202,74 @@ export default function LeftSidebar({ active, setActive, data, setData, selected
           </div>
         )
 
+      }
+
+      {
+        active === "voice" && (
+          <div className='flex-1 h-full flex flex-col justify-between'>
+            <div className='px-4 flex-1 py-6'>
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
+                  Voice Options
+                </h3>
+                <div className="space-y-2">
+                  {(['Puck', 'Kore', 'Charon'] as VoiceOption[]).map((voice) => (
+                    <button
+                      key={voice}
+                      onClick={() => setSelectedVoice(voice)}
+                      className={`w-full flex items-center justify-between gap-2 p-2 rounded-lg border transition-all text-left ${
+                        selectedVoice === voice
+                          ? 'border-secondary bg-secondary/10 text-secondary'
+                          : 'border-gray-500/[0.1] hover:border-secondary/50'
+                      }`}
+                    >
+                      <div className="font-semibold text-sm">{voice}</div>
+                      <div className="text-xs opacity-70 mt-1">
+                        {voice === 'Puck' && 'Energetic and upbeat'}
+                        {voice === 'Kore' && 'Balanced and professional'}
+                        {voice === 'Charon' && 'Deep and authoritative'}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {data.voice && (
+                <div className="mb-4">
+                  <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+                    Generated Voice
+                  </h3>
+                  <audio controls className="w-full" src={data.voice}>
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
+            </div>
+
+            <div className="p-4">
+              <button
+                onClick={handleGenerateVoice}
+                disabled={isGeneratingVoice || data.elements.length === 0}
+                className="w-full px-4 py-3 bg-secondary hover:bg-secondary/90 text-white rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isGeneratingVoice ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <span>🎙️</span>
+                    Generate Voice Narration
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )
       }
 
     </div>
