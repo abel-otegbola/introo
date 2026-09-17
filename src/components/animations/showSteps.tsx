@@ -24,9 +24,10 @@ export default function ShowSteps({
   activeStepRef.current = activeStep;
 
   useEffect(() => {
+    const wrapper = wrapperRef.current;
     const content = contentRef.current;
 
-    if (!content || stepCount < 1) return;
+    if (!wrapper || !content || stepCount < 1) return;
 
     let cancelled = false;
     let cleanup: (() => void) | undefined;
@@ -39,6 +40,7 @@ export default function ShowSteps({
       gsap.registerPlugin(ScrollTrigger);
 
       const stepElements = gsap.utils.toArray<HTMLElement>("[data-show-step]", content);
+      const stepDistance = Math.max(stepCount - 0.5, 0.5) * 200;
 
       const setActiveStep = (step: number) => {
         const nextStep = Math.max(0, Math.min(step, stepCount - 1));
@@ -48,27 +50,29 @@ export default function ShowSteps({
         }
 
         gsap.to(stepElements, {
-          opacity: (index) => (index === nextStep ? 1 : 0.45),
+          opacity: (index) => (index === nextStep ? 1 : 0.25),
           duration: 0.35,
           ease: "power2.out",
           overwrite: true,
         });
       };
 
-      const triggers = stepElements.map((stepElement, index) =>
-        ScrollTrigger.create({
-          trigger: stepElement,
-          start: "top 62%",
-          end: "bottom 38%",
-          onEnter: () => setActiveStep(index),
-          onEnterBack: () => setActiveStep(index),
-        }),
-      );
+      const trigger = ScrollTrigger.create({
+        trigger: wrapper,
+        start: "top 18%",
+        end: `+=${stepDistance}`,
+        pin: content,
+        scrub: true,
+        snap: stepCount > 1 ? 1 / (stepCount - 1) : 1,
+        onUpdate: (self) => {
+          setActiveStep(Math.round(self.progress * (stepCount - 1)));
+        },
+      });
 
       setActiveStep(activeStepRef.current);
 
       cleanup = () => {
-        triggers.forEach((trigger) => trigger.kill());
+        trigger.kill();
         gsap.killTweensOf(stepElements);
       };
     });
@@ -87,8 +91,8 @@ export default function ShowSteps({
       const stepElements = gsap.utils.toArray<HTMLElement>("[data-show-step]", content);
 
       gsap.to(stepElements, {
-        opacity: (index) => (index === activeStep ? 1 : 0.45),
-        duration: 0.35,
+        opacity: (index) => (index === activeStep ? 1 : 0.25),
+        duration: 0.50,
         ease: "power2.out",
         overwrite: true,
       });

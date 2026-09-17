@@ -30,12 +30,11 @@ const steps = [
 
 export default function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0);
-  const selectedStep = steps[activeStep];
 
   return (
     <section
       id="HowItWorks"
-      className="flex w-full flex-col gap-12 px-4 py-[80px] md:px-[5%] lg:px-[10%]"
+      className="flex w-full flex-col gap-12 px-4 pt-[80px] md:px-[5%] lg:px-[10%]"
     >
       <div className="mx-auto flex max-w-[600px] flex-col items-center gap-3 text-center">
         <p className="text-sm font-medium uppercase tracking-[0.12em] opacity-50">
@@ -62,20 +61,14 @@ export default function HowItWorks() {
         className="mx-auto w-full max-w-[1120px]"
       >
         <div className="grid gap-8 md:grid-cols-[minmax(0,0.95fr)_minmax(360px,1fr)] md:items-center md:gap-12">
-          <div className="relative flex aspect-[4/3] min-h-[280px] items-center justify-center overflow-hidden rounded-[12px] border border-gray-500/[0.2] bg-gray-200 dark:bg-[#202020]">
-            <div className="absolute inset-4 rounded-[8px] border border-white/[0.5] dark:border-white/[0.08]" />
+          <div className="relative flex w-full md:h-[280px] h-[160px] items-center justify-center overflow-hidden rounded-[12px] border border-gray-500/[0.2] bg-gray-200 dark:bg-[#202020]">
+            <div className="absolute inset-4 rounded-[8px]" />
             <div className="relative flex flex-col items-center gap-3 text-center">
-              <span className="text-4xl font-medium text-secondary opacity-80">
-                {selectedStep.number}
-              </span>
-              <span className="text-xs uppercase tracking-[0.12em] opacity-40">
-                {selectedStep.visualLabel}
-              </span>
-              <span className="text-xs opacity-30">Visual coming soon</span>
+              
             </div>
           </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col md:gap-12 gap-5">
           {steps.map((step, index) => {
             const isActive = index === activeStep;
 
@@ -90,7 +83,7 @@ export default function HowItWorks() {
                   isActive ? "opacity-100 border-l-2 border-secondary" : "opacity-45 hover:opacity-75 border-l-2 border-gray-500/[0.1]"
                 }`}
               >
-                <span
+                {/* <span
                   className={`mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-medium transition-colors ${
                     isActive
                       ? "border-secondary bg-secondary text-white"
@@ -98,14 +91,14 @@ export default function HowItWorks() {
                   }`}
                 >
                   {step.number}
-                </span>
+                </span> */}
                 <span className="flex flex-col gap-2">
-                  <span className="w-[75%] font-medium leading-[120%]">
+                  <span className="md:w-[75%] font-medium leading-[120%]">
                     {step.title}
                   </span>
                   <span
-                    className={`leading-6 transition-all w-[75%] text-sm duration-500 ${
-                      isActive ? "max-h-40 opacity-70" : "max-h-0 overflow-hidden opacity-0"
+                    className={`leading-6 transition-all md:w-[75%] text-sm duration-500 ${
+                      isActive ? "max-h-40 opacity-50" : "max-h-0 overflow-hidden opacity-0"
                     }`}
                   >
                     {step.description}

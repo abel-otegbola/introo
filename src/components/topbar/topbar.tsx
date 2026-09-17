@@ -52,7 +52,7 @@ export default function Topbar() {
                     ))
                 }
             </div>
-            <div className="flex items-center gap-3">
+            <div className="md:flex hidden items-center gap-3">
                 <ThemeSelector openSidebar={open} />
                 <Button size={"sm"} >
                     Sign up

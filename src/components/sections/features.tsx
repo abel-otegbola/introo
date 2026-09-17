@@ -60,7 +60,7 @@ export default function Features() {
           return (
             <ScrollAnimate
               key={feature.title}
-              animation={index % 2 === 0 ? "slideRight" : "slideLeft"}
+              animation={"slideUp"}
               delay={index * 0.08}
             >
               <article className="flex min-h-[210px] flex-col gap-4 justify-between rounded-[12px] border border-gray-500/[0.2] bg-white p-4 dark:bg-[#101010] md:p-4">
