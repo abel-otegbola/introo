@@ -25,15 +25,6 @@ function DashboardPage() {
               }
             </div>
 
-            {
-              [
-                { id: 1, title: "The Power of Faith", description: "Discover the transformative power of faith in your life.", author: "John Doe", date: "2023-09-15",  },
-                { id: 2, title: "Overcoming Challenges", description: "Learn how to overcome life's challenges with resilience.", author: "Jane Smith", date: "2023-09-14" },
-                { id: 3, title: "The Path to Inner Peace", description: "Explore the journey to inner peace and tranquility.", author: "Emily Johnson", date: "2023-09-13" },
-              ].map(() => {
-                
-              })
-            }
           </div>
         </div>
     </div>
