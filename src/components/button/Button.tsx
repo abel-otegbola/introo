@@ -6,7 +6,7 @@ export interface buttonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: "primary" | "secondary" | "tertiary";
     className?: string;
     href?: string;
-    size?: "small" | "medium" | "large" | "xs";
+    size?: "sm" | "md" | "lg" | "xs";
     disabled?: boolean,
     onClick?: () => void,
     children?: ReactNode
@@ -14,7 +14,7 @@ export interface buttonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export default function Button({ variant, className, href, size, disabled, onClick, children, ...props }: buttonProps) {
     const variants = {
-        primary: "hover:bg-[#101010] dark:hover:bg-secondary/[0.8] bg-primary dark:bg-secondary text-white shadow-sm",
+        primary: "hover:bg-primary dark:hover:bg-primary/[0.8] bg-primary text-white shadow-sm",
         secondary: "shadow-sm border border-gray-500/[0.2] hover:bg-black/[0.05]",
         tertiary: "rounded-[4px]"
     }
@@ -29,7 +29,7 @@ export default function Button({ variant, className, href, size, disabled, onCli
                     className={`rounded-[12px] flex items-center justify-center md:gap-2 gap-1 w-fit 
                         ${variants[variant || "primary"]} 
                         ${disabled ? "opacity-[0.25]" : ""} 
-                        ${size === "xs" ? "rounded-[2px] text-[8px] py-[2px] md:px-[8px] px-[4px]" : size === "small" ? "rounded text-[12px] py-[4px] md:px-[12px] px-[8px]" : size === "large" ? "rounded-[12px] md:py-[16px] py-[10px] md:px-[32px] px-[28px]" : "md:rounded-[8px] rounded-lg py-[12px] md:px-[24px] px-[18px]"} 
+                        ${size === "xs" ? "rounded-[2px] text-[8px] py-[2px] md:px-[8px] px-[4px]" : size === "sm" ? "rounded-lg text-[14px] py-[6px] px-4" : size === "lg" ? "rounded-[12px] md:py-[16px] py-[10px] md:px-[32px] px-[28px]" : "rounded-lg py-[12px] md:px-[24px] px-[18px]"} 
                         ${className} 
                     `}
                 > 
@@ -37,10 +37,10 @@ export default function Button({ variant, className, href, size, disabled, onCli
                 </Link>
                 : 
                 <button 
-                    className={`rounded-[12px] duration-500 flex items-center justify-center md:gap-2 gap-1 w-fit cursor-pointer
+                    className={`rounded duration-500 flex items-center justify-center md:gap-2 gap-1 w-fit cursor-pointer
                         ${variants[variant || "primary"]} 
                         ${disabled ? "opacity-[0.25]" : ""} 
-                        ${size === "xs" ? "rounded-[2px] text-[8px] py-[2px] md:px-[8px] px-[4px]" : size === "small" ? "rounded text-[12px] py-[4px] md:px-[12px] px-[8px]" : size === "large" ? "rounded-[12px] md:py-[16px] py-[10px] md:px-[32px] px-[28px]" : "md:rounded-[8px] rounded-lg py-[12px] md:px-[24px] px-[18px]"} 
+                        ${size === "xs" ? "rounded-[2px] text-[8px] py-[2px] md:px-[8px] px-[4px]" : size === "sm" ? "rounded-lg text-[14px] py-[6px] px-4" : size === "lg" ? "rounded-[12px] md:py-[16px] py-[10px] md:px-[32px] px-[28px]" : "rounded-lg py-[12px] md:px-[24px] px-[18px]"} 
                         ${className} 
                     `}
                     {...props}

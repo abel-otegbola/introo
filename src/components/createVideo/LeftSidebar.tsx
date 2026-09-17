@@ -108,7 +108,8 @@ export default function LeftSidebar({ active, setActive, data, setData, selected
           clientInfo: data.projectInfo.clientInfo,
           keyMetrics: data.projectInfo.keyMetrics,
           additionalInfo: data.projectInfo.additionalInfo,
-        } : undefined
+        } : undefined,
+        data.duration // Pass current video duration
       );
       
       setData({

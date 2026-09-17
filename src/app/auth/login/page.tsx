@@ -20,7 +20,7 @@ export default function Login() {
       <AuthOverlay />
 
       <div className="scroll flex items-center justify-center 2xl:w-[65%] xl:w-[70%] md:w-[65%] h-screen overflow-y-auto w-full md:px-0 px-6">
-        <div className="flex flex-col justify-center 2xl:w-[600px] sm:w-[460px] md:mx-0 mx-auto h-full w-full">
+        <div className="flex flex-col justify-center 2xl:w-[400px] sm:w-[360px] md:mx-0 mx-auto h-full w-full">
           <div className="relative flex flex-col justify-center 2xl:gap-12 gap-6">
             <div className="flex flex-col gap-2">
               <h1 className="font-medium text-[24px] text-center">Welcome back</h1>

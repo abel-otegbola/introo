@@ -1,23 +1,15 @@
 import type { Metadata } from "next";
-import { Figtree, Questrial } from "next/font/google";
+import { Mona_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import AuthProvider from "@/contexts/AuthContext";
+import Footer from "@/components/sections/footer";
 
-const figtree = Figtree({
-  variable: "--font-figtree",
-  subsets: ["latin"],
-});
-
-const questrial = Questrial({
-  variable: "--font-questrial",
-  weight: "400",
-  subsets: ["latin"],
-});
+const mona_sans = Mona_Sans({subsets:['latin'],variable:'--font-sans'})
 
 export const metadata: Metadata = {
   title: "Introo",
-  description: "Build your pitch video",
+  description: "Build your presentation video",
 };
 
 export default function RootLayout({
@@ -41,11 +33,12 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${figtree.variable} ${questrial.variable} bg-white dark:bg-primary antialiased 2xl:text-[18px] md:text-[15px] text-[14px] leading-[100%] tracking-[0%]`}
+        className={`${mona_sans.variable} bg-white dark:bg[#101010] antialiased`}
       >
         <ThemeProvider>
           <AuthProvider>
             {children}
+            <Footer />
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -18,14 +18,14 @@
 
 /* Dark mode using .dark class */
 .dark {
-  --background: #24222D;
+  --background: #0e0e0e;
   --foreground: #ffffff;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Questrial', sans-serif;
+  font-family: 'Mona Sans', sans-serif;
 }
 
 .btn-bg {
@@ -92,4 +92,27 @@ body {
 [data-color-mode*='dark'] .w-color-alpha {
   --alpha-pointer-background-color: #6a6a6a !important;
   --alpha-pointer-box-shadow: rgb(0 0 0 / 37%) 0px 1px 4px 0px !important;
+}
+
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 24px;
+  will-change: transform;
+  animation: marquee-scroll 24s linear infinite;
+}
+
+.marquee-group {
+  display: flex;
+  flex-shrink: 0;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

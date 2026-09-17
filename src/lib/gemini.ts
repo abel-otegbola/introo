@@ -45,58 +45,98 @@ export interface VoiceGenerationResponse {
   transcript: string;
 }
 
-// Convert base64 PCM audio to WAV format
+// Convert base64 PCM audio to WAV format and return as Object URL
 function pcmToWav(base64Pcm: string, sampleRate: number = 24000): string {
-  // Decode base64 to bytes
-  const binaryString = atob(base64Pcm);
-  const bytes = new Uint8Array(binaryString.length);
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
+  try {
+    // Decode base64 to bytes more efficiently
+    const binaryString = atob(base64Pcm);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    // PCM is 16-bit (2 bytes per sample), mono
+    const numChannels = 1;
+    const bitsPerSample = 16;
+    const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+    const blockAlign = numChannels * (bitsPerSample / 8);
+    const dataSize = bytes.length;
+
+    // Create WAV header (44 bytes)
+    const header = new ArrayBuffer(44);
+    const view = new DataView(header);
+
+    // "RIFF" chunk descriptor
+    view.setUint32(0, 0x52494646, false); // "RIFF"
+    view.setUint32(4, 36 + dataSize, true); // File size - 8
+    view.setUint32(8, 0x57415645, false); // "WAVE"
+
+    // "fmt " sub-chunk
+    view.setUint32(12, 0x666d7420, false); // "fmt "
+    view.setUint32(16, 16, true); // Subchunk1 size (16 for PCM)
+    view.setUint16(20, 1, true); // Audio format (1 for PCM)
+    view.setUint16(22, numChannels, true); // Number of channels
+    view.setUint32(24, sampleRate, true); // Sample rate
+    view.setUint32(28, byteRate, true); // Byte rate
+    view.setUint16(32, blockAlign, true); // Block align
+    view.setUint16(34, bitsPerSample, true); // Bits per sample
+
+    // "data" sub-chunk
+    view.setUint32(36, 0x64617461, false); // "data"
+    view.setUint32(40, dataSize, true); // Data size
+
+    // Combine header and audio data
+    const wavBytes = new Uint8Array(44 + dataSize);
+    wavBytes.set(new Uint8Array(header), 0);
+    wavBytes.set(bytes, 44);
+
+    // Create Blob instead of data URL for better performance
+    const blob = new Blob([wavBytes], { type: 'audio/wav' });
+    const objectUrl = URL.createObjectURL(blob);
+    
+    console.log('Created WAV blob, size:', blob.size, 'bytes');
+    return objectUrl;
+  } catch (error) {
+    console.error('Error converting PCM to WAV:', error);
+    // Fallback to data URL if blob creation fails
+    const binaryString = atob(base64Pcm);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    
+    const dataSize = bytes.length;
+    const header = new ArrayBuffer(44);
+    const view = new DataView(header);
+    
+    view.setUint32(0, 0x52494646, false);
+    view.setUint32(4, 36 + dataSize, true);
+    view.setUint32(8, 0x57415645, false);
+    view.setUint32(12, 0x666d7420, false);
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    view.setUint32(36, 0x64617461, false);
+    view.setUint32(40, dataSize, true);
+    
+    const wavBytes = new Uint8Array(44 + dataSize);
+    wavBytes.set(new Uint8Array(header), 0);
+    wavBytes.set(bytes, 44);
+    
+    let binary = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < wavBytes.length; i += chunkSize) {
+      const chunk = wavBytes.subarray(i, Math.min(i + chunkSize, wavBytes.length));
+      binary += String.fromCharCode.apply(null, Array.from(chunk));
+    }
+    const base64Wav = btoa(binary);
+    return `data:audio/wav;base64,${base64Wav}`;
   }
-
-  // PCM is 16-bit (2 bytes per sample), mono
-  const numChannels = 1;
-  const bitsPerSample = 16;
-  const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
-  const blockAlign = numChannels * (bitsPerSample / 8);
-  const dataSize = bytes.length;
-
-  // Create WAV header
-  const header = new ArrayBuffer(44);
-  const view = new DataView(header);
-
-  // "RIFF" chunk descriptor
-  view.setUint32(0, 0x52494646, false); // "RIFF"
-  view.setUint32(4, 36 + dataSize, true); // File size - 8
-  view.setUint32(8, 0x57415645, false); // "WAVE"
-
-  // "fmt " sub-chunk
-  view.setUint32(12, 0x666d7420, false); // "fmt "
-  view.setUint32(16, 16, true); // Subchunk1 size (16 for PCM)
-  view.setUint16(20, 1, true); // Audio format (1 for PCM)
-  view.setUint16(22, numChannels, true); // Number of channels
-  view.setUint32(24, sampleRate, true); // Sample rate
-  view.setUint32(28, byteRate, true); // Byte rate
-  view.setUint16(32, blockAlign, true); // Block align
-  view.setUint16(34, bitsPerSample, true); // Bits per sample
-
-  // "data" sub-chunk
-  view.setUint32(36, 0x64617461, false); // "data"
-  view.setUint32(40, dataSize, true); // Data size
-
-  // Combine header and audio data
-  const wavBytes = new Uint8Array(44 + dataSize);
-  wavBytes.set(new Uint8Array(header), 0);
-  wavBytes.set(bytes, 44);
-
-  // Convert to base64
-  let binary = '';
-  for (let i = 0; i < wavBytes.length; i++) {
-    binary += String.fromCharCode(wavBytes[i]);
-  }
-  const base64Wav = btoa(binary);
-
-  return `data:audio/wav;base64,${base64Wav}`;
 }
 
 interface ContentPart {
@@ -119,7 +159,8 @@ interface GenerateContentResponse {
 export async function generateVoiceNarration(
   elements: AIGeneratedElement[],
   voice: VoiceOption = 'Kore',
-  projectInfo?: ProjectInfo
+  projectInfo?: ProjectInfo,
+  duration?: number
 ): Promise<VoiceGenerationResponse> {
   try {
     // Verify API key is set
@@ -132,9 +173,17 @@ export async function generateVoiceNarration(
     // First, generate a natural narration script using Gemini
     let narrativeScript: string;
     
+    // Calculate total duration from passed parameter or elements
+    const totalDuration = duration || Math.max(...elements.map(e => (e.start || 0) + e.duration));
+    
+    // Calculate word count: average speaking rate is 150 words per minute (2.5 words per second)
+    const maxWordCount = Math.floor(totalDuration * 2.2);
+    const minWordCount = Math.floor(totalDuration * 1.7);
+    
     if (projectInfo) {
       console.log('Generating narration script with AI...');
-      const scriptPrompt = `Create a natural, engaging voiceover narration for a ${Math.max(...elements.map(e => (e.start || 0) + e.duration))}-second video presentation.
+      console.log(`Target duration: ${totalDuration} seconds (${minWordCount}-${maxWordCount} words)`);
+      const scriptPrompt = `Create a natural, engaging voiceover narration for a video presentation.
 
 Project: ${projectInfo.projectName}
 Description: ${projectInfo.projectDescription}
@@ -145,17 +194,23 @@ ${projectInfo.keyMetrics ? `Key Metrics: ${projectInfo.keyMetrics.map(m => `${m.
 The video has ${elements.length} scenes with the following content:
 ${elements.map((e, i) => `Scene ${i + 1} (${e.duration}s): ${e.content || e.title}`).join('\n')}
 
-Create a professional, conversational voiceover script that:
-- Flows naturally and smoothly from one scene to the next
-- Connects all the scene descriptions into a compelling narrative
-- Describes the project, its features, and benefits
-- Matches the video timing (about ${Math.max(...elements.map(e => (e.start || 0) + e.duration))} seconds when read aloud)
-- Sounds engaging, persuasive, and professional
-- Doesn't mention scene numbers or timing
-- Tells a compelling story about the project
-- Weaves together the scene descriptions seamlessly
+🚨 CRITICAL DURATION REQUIREMENT 🚨
+The narration MUST be EXACTLY ${totalDuration} seconds when spoken aloud at a natural pace.
+Word count: ${minWordCount}-${maxWordCount} words (NO MORE, NO LESS)
+Speaking rate: 2.0-2.5 words per second
 
-Write ONLY the narration text, no stage directions or metadata. Keep it concise and impactful.`;
+Create a professional, conversational voiceover script that:
+- MUST fit within ${totalDuration} seconds when read aloud (THIS IS MANDATORY)
+- Write ${minWordCount}-${maxWordCount} words total (count carefully)
+- Flows naturally and smoothly from one scene to the next
+- Connects scene descriptions into a compelling narrative
+- Describes the project, features, and benefits concisely
+- Sounds engaging, persuasive, and professional
+- Does NOT mention scene numbers or timing
+- Tells a compelling story about the project
+
+IMPORTANT: If the video is ${totalDuration} seconds, your script CANNOT exceed ${maxWordCount} words.
+Write ONLY the narration text, no stage directions or metadata. Be concise and stay within word limit.`;
 
       const scriptResult = await client.models.generateContent({
         model: 'gemini-2.0-flash',
@@ -175,6 +230,7 @@ Write ONLY the narration text, no stage directions or metadata. Keep it concise 
 
     console.log('Narration text:', narrativeScript);
     console.log('Generating audio with text-to-speech...');
+    console.log('Script word count:', narrativeScript.split(/\s+/).length);
 
     // Generate audio using gemini-2.5-flash-preview-tts with proper config
     const audioModel = 'gemini-2.5-flash-preview-tts';
@@ -233,20 +289,33 @@ Write ONLY the narration text, no stage directions or metadata. Keep it concise 
       console.log('Audio data length:', audioData.length);
       console.log('MIME type:', mimeType);
       
-      // Convert PCM to WAV if needed
+      // Convert audio data to proper format
       let audioUrl: string;
-      if (mimeType.includes('L16') || mimeType.includes('pcm')) {
-        console.log('Converting PCM to WAV format...');
-        // Extract sample rate from MIME type (e.g., "rate=24000")
-        const rateMatch = mimeType.match(/rate=(\d+)/);
-        const sampleRate = rateMatch ? parseInt(rateMatch[1]) : 24000;
-        audioUrl = pcmToWav(audioData, sampleRate);
-        console.log('Converted to WAV format');
-      } else {
+      try {
+        if (mimeType.includes('L16') || mimeType.includes('pcm')) {
+          console.log('Converting PCM to WAV format...');
+          // Extract sample rate from MIME type (e.g., "rate=24000")
+          const rateMatch = mimeType.match(/rate=(\d+)/);
+          const sampleRate = rateMatch ? parseInt(rateMatch[1]) : 24000;
+          audioUrl = pcmToWav(audioData, sampleRate);
+          console.log('Converted to WAV format with object URL');
+        } else {
+          // For other formats, create a Blob URL for better performance
+          const binaryString = atob(audioData);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          const blob = new Blob([bytes], { type: mimeType });
+          audioUrl = URL.createObjectURL(blob);
+          console.log('Created blob URL for audio, size:', blob.size, 'bytes');
+        }
+      } catch (error) {
+        console.warn('Failed to create blob URL, falling back to data URL:', error);
         audioUrl = `data:${mimeType};base64,${audioData}`;
       }
       
-      console.log('Voice narration generated successfully, audio URL length:', audioUrl.length);
+      console.log('Voice narration generated successfully');
       
       return {
         audioUrl,

@@ -2,13 +2,16 @@
 import { useContext, useState, type ReactElement } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
-import { DatabaseIcon, GearIcon, HouseIcon, Icon, LinkSimpleIcon, SidebarIcon, SignOutIcon, VideoCameraIcon, XCircleIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 import ThemeSelector from "../themeSelector/ThemeSelector";
 import LogoIcon from "@/assets/icons/logo";
+import { Icon } from "@solar-icons/react/lib/types";
+import { DatabaseBoldDuotoneIcon, GraphBoldDuotoneIcon, Home2LinearIcon, HomeBoldDuotoneIcon, Logout2LinearIcon, SettingsBoldDuotoneIcon, UserCircleBoldDuotoneIcon, VideoFrame2BoldDuotoneIcon } from "@solar-icons/react";
+import { DatabaseIcon, GraphIcon, SettingsIcon, UserCircleIcon, VideoFrame2Icon } from "@solar-icons/react/linear";
+import { SidebarIcon, XCircleIcon } from "@phosphor-icons/react";
 
 export interface Link {
-    id: number; label: string; icon: ReactElement<Icon>, link: string, subtext?: string
+    id: number; label: string; icon: ReactElement<Icon>, activeIcon: ReactElement<Icon>, link: string, subtext?: string
 }
 
 function Sidebar() {
@@ -27,14 +30,15 @@ function Sidebar() {
     };
 
     const generalLinks: Link[] = [
-        { id: 0, label: "Dashboard", icon: <HouseIcon size={20} />, link: "/account" },
-        { id: 2, label: "Projects", icon: <DatabaseIcon size={20} />, link: "/account/projects" },
-        { id: 3, label: "Videos", icon: <VideoCameraIcon size={20} />, link: "/account/videos" },
-        { id: 4, label: "Links", icon: <LinkSimpleIcon size={20} />, link: "/account/links" },
+        { id: 0, label: "Home", icon: <Home2LinearIcon size={20} />, activeIcon: <HomeBoldDuotoneIcon size={20} />, link: "/account" },
+        { id: 1, label: "Library", icon: <DatabaseIcon size={20} />, activeIcon: <DatabaseBoldDuotoneIcon size={20} />, link: "/account/library" },
+        { id: 2, label: "Stories", icon: <VideoFrame2Icon size={20} />, activeIcon: <VideoFrame2BoldDuotoneIcon size={20} />, link: "/account/stories" },
+        { id: 3, label: "Stats", icon: <GraphIcon size={20} />, activeIcon: <GraphBoldDuotoneIcon size={20} />, link: "/account/stats" },
     ]
     
     const otherLinks: Link[] = [
-        { id: 1, label: "Settings", icon: <GearIcon size={20} />, link: "/account/settings" },
+        { id: 5, label: "Following", icon: <UserCircleIcon size={20} />, activeIcon: <UserCircleBoldDuotoneIcon size={20} />, link: "/account/following" },
+        { id: 6, label: "Settings", icon: <SettingsIcon size={20} />, activeIcon: <SettingsBoldDuotoneIcon size={20} />, link: "/account/settings" },
     ]
 
     return (
@@ -56,28 +60,29 @@ function Sidebar() {
                 {/* Navigation Links */}
                 <div className="flex-1 flex flex-col gap-6 mt-8">
                     <div className="flex flex-col gap-2">
-                        <p className={`text-gray-500 text-[12px] mb-2 px-4 ${open ? "sm:opacity-0" : ""}`}>MAIN</p>
+                        {/* <p className={`text-gray-500 text-[12px] mb-2 px-4 ${open ? "sm:opacity-0" : ""}`}>MAIN</p> */}
                         {
                         generalLinks.map(link => {
                                 return (
-                                <Link key={link.id} onClick={() => setOpen(false)} href={ link.link} className={`relative flex items-center justify-between px-3 py-[10px] rounded-[8px] duration-300 ${pathname.includes(link.link) ? "bg-primary dark:bg-secondary text-white" : "font-medium hover:bg-gray-500/[0.05]"}`}>
-                                    <div className="flex items-center gap-3">
-                                        <span className={`w-[18px] ${pathname.includes(link.link) ? "text-white opacity-100" : ""}`}>{link.icon}</span>
-                                        <span className={`flex-1 py-1 break-normal font-medium duration-500 ${open ? "sm:hidden" : ""}`}>{link.label} </span>
+                                <Link key={link.id} onClick={() => setOpen(false)} href={ link.link} className={`relative flex items-center justify-between px-3 py-[6px] rounded-[8px] duration-300 ${pathname.includes(link.link) ? "text-secondary" : "font-medium opacity-50 hover:bg-gray-500/[0.05]"}`}>
+                                    <div className="flex items-center gap-6 text-[15px]">
+                                        <span className={`w-[18px] ${pathname.includes(link.link) ? "text-secondary opacity-100" : ""}`}>{pathname.includes(link.link) ? link.activeIcon : link.icon}</span>
+                                        <span className={`flex-1 break-normal font-medium duration-500 ${open ? "sm:hidden" : ""}`}>{link.label} </span>
                                     </div>
                                     { link.subtext ? <span className="flex items-center justify-center bg-primary text-white text-[9px] rounded-full px-[6px]">{link.subtext}</span> : ""}
                                 </Link>
                                 )
                         })
                         }
-                        <p className={`text-gray-500 text-[12px] mb-2 px-4 mt-6 ${open ? "sm:opacity-0" : ""}`}>OTHERS</p>
+                        {/* <p className={`text-gray-500 text-[12px] mb-2 px-4 mt-6 ${open ? "sm:opacity-0" : ""}`}>OTHERS</p> */}
+                        <span className="w-full border-t border-gray-500/[0.1] my-6"></span>
                         {
                        otherLinks.map(link => {
                                 return (
-                                <Link key={link.id} onClick={() => setOpen(false)} href={ link.link} className={`relative flex items-center justify-between px-3 py-[10px] rounded-[8px] duration-300 ${pathname.includes(link.link) ? "bg-primary dark:bg-secondary text-white" : "font-medium hover:bg-gray-500/[0.05]"}`}>
-                                    <div className="flex items-center gap-3">
-                                        <span className={`w-[18px] ${pathname.includes(link.link) ? "text-white opacity-100" : ""}`}>{link.icon}</span>
-                                        <span className={`flex-1 py-1 break-normal font-medium duration-500 ${open ? "sm:hidden" : ""}`}>{link.label} </span>
+                                <Link key={link.id} onClick={() => setOpen(false)} href={ link.link} className={`relative flex items-center justify-between px-3 py-[6px] rounded-[8px] duration-300 ${pathname.includes(link.link) ? "text-secondary" : "font-medium opacity-50 hover:bg-gray-500/[0.05]"}`}>
+                                    <div className="flex items-center gap-6 text-[15px]">
+                                        <span className={`w-[18px] ${pathname.includes(link.link) ? "text-secondary opacity-100" : ""}`}>{pathname.includes(link.link) ? link.activeIcon : link.icon}</span>
+                                        <span className={`flex-1 break-normal font-medium duration-500 ${open ? "sm:hidden" : ""}`}>{link.label} </span>
                                     </div>
                                     { link.subtext ? <span className="flex items-center justify-center bg-primary text-white text-[9px] rounded-full px-[6px]">{link.subtext}</span> : ""}
                                 </Link>
@@ -85,10 +90,10 @@ function Sidebar() {
                         })
                         }
                         
-                        <button onClick={() => {setOpen(false); logOut()}} className={`relative flex items-center justify-between px-3 py-[10px] md:rounded-[8px] duration-300 font-medium hover:bg-gray-500/[0.05]`}>
-                            <div className="flex items-center gap-3">
-                                <span className={`w-[18px]`}><SignOutIcon size={20} /></span>
-                                <span className={`flex-1 py-1 break-normal duration-500 ${open ? "sm:hidden" : ""}`}>Logout </span>
+                        <button onClick={() => {setOpen(false); logOut()}} className={`relative flex items-center justify-between px-3 py-[6px] md:rounded-[8px] duration-300 font-medium opacity-50 hover:bg-gray-500/[0.05]`}>
+                            <div className="flex items-center gap-6">
+                                <span className={`w-[18px]`}><Logout2LinearIcon size={20} /></span>
+                                <span className={`flex-1 break-normal duration-500 ${open ? "sm:hidden" : ""}`}>Logout </span>
                             </div>
                         </button>
                     </div>
