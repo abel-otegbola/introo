@@ -37,7 +37,7 @@ export default function HowItWorks() {
       className="flex w-full flex-col gap-12 px-4 pt-[80px] md:px-[5%] lg:px-[10%]"
     >
       <div className="mx-auto flex max-w-[600px] flex-col items-center gap-3 text-center">
-        <p className="text-sm font-medium uppercase tracking-[0.12em] opacity-50">
+        <p className="text-xs font-medium uppercase tracking-[0.12em] opacity-50">
           How it works
         </p>
         <AnimateHeading

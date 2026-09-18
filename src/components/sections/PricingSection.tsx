@@ -47,7 +47,7 @@ export default function PricingSection({ fullPage = false }: { fullPage?: boolea
       }`}
     >
       <div className="flex max-w-[500px] flex-col items-center gap-3 text-center">
-        <p className="text-sm font-medium uppercase tracking-[0.12em] opacity-50">
+        <p className="text-xs font-medium uppercase tracking-[0.12em] opacity-50">
           Simple pricing
         </p>
         <AnimateHeading repeat={false} tag="h2" start="top 90%" className="font-medium text-center leading-[120%] tracking-[-2%] md:text-[28px] text-[24px]">

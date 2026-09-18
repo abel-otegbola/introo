@@ -18,8 +18,8 @@ export default function ThemeSelector({ openSidebar }: { openSidebar: boolean })
 
     return (
         <div ref={themeRef} className="relative flex flex-col gap-2 border border-gray-500/[0.1] p-2 rounded-lg">
-            <button  className={`text-xs text-gray-500 font-medium text-start ${openSidebar ? "px-1" : "px-2"}`} onClick={() => setOpen(!open)}>{openSidebar ? themes.find(t => t.value === theme)?.icon : "THEME"}</button>
-            <div className={`flex flex-col items-center w-full gap-2 p-1 bg-white dark:bg-primary rounded-lg border border-gray-500/[0.1] shadow-xs rounded-lg absolute bottom-[120%] left-0 transform mt-2 ${open ? 'block' : 'hidden'}`}>
+            <button  className={`text-xs text-gray-500 font-medium text-start ${openSidebar ? "px-1" : "px-2"}`} onClick={() => setOpen(!open)}>{openSidebar ? themes.find(t => t.value === theme)?.icon : theme}</button>
+            <div className={`flex flex-col items-center text-[12px] w-full gap-2 p-1 bg-white dark:bg-primary rounded-lg border border-gray-500/[0.1] shadow-xs rounded-lg absolute bottom-[120%] left-0 transform mt-2 ${open ? 'block' : 'hidden'}`}>
                 {themes.map((themeOption) => {
                     return (
                         <button

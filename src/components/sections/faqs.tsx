@@ -6,7 +6,7 @@ export default function FAQs() {
     return (
     <section className="child flex flex-col items-center justify-center md:gap-12 gap-8 lg:px-[15%] sm:px-[5%] px-4 py-[80px]">
     <div className="flex flex-col items-center justify-center gap-4 w-full">
-        <p className="text-sm font-medium uppercase tracking-[0.12em] opacity-50">
+        <p className="text-xs font-medium uppercase tracking-[0.12em] opacity-50">
             Frequently Asked Questions
           </p>
         <AnimateHeading repeat={true} tag="h2" start="top 90%" className="font-medium text-center leading-[120%] tracking-[-2%] md:text-[28px] text-[24px]">

@@ -40,7 +40,7 @@ export default function ShowSteps({
       gsap.registerPlugin(ScrollTrigger);
 
       const stepElements = gsap.utils.toArray<HTMLElement>("[data-show-step]", content);
-      const stepDistance = Math.max(stepCount - 0.5, 0.5) * 200;
+      const stepDistance = Math.max(stepCount - 1, 1) * 200;
 
       const setActiveStep = (step: number) => {
         const nextStep = Math.max(0, Math.min(step, stepCount - 1));

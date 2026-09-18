@@ -17,7 +17,7 @@ export default function Topbar() {
             <Link href={"/"} className="flex items-center gap-2 md:min-w-[16%]">
                 {/* <img src="/logo.png" className="w-[40px] h-[36px]" /> */}
                 <div className="flex gap-1 items-center">
-                    <h1 className="tracking-[-3%] text-[17px] font-semibold">Introo.</h1>
+                    <h1 className="tracking-[10%] font-bold text-[16px] uppercase">Introo.</h1>
                 </div>
             </Link>
             <div className="items-center gap-4 text-[14px] md:flex hidden">
@@ -53,10 +53,12 @@ export default function Topbar() {
                 }
             </div>
             <div className="md:flex hidden items-center gap-3">
-                <ThemeSelector openSidebar={open} />
-                <Button size={"sm"} >
-                    Sign up
-                </Button>
+                <ThemeSelector openSidebar={!open} />
+                <Link href="/auth/signup">
+                    <Button size={"sm"} >
+                        Sign up
+                    </Button>
+                </Link>
             </div>
 
             <ul className={`
@@ -96,8 +98,8 @@ export default function Topbar() {
                     <Button className="w-full mt-6" >Sign up</Button>  
                 </div>
                 <div className="flex flex-col gap-2">
-                    <p className="opacity-50 uppercase text-[12px] mx-2">Templates</p>
-                    <Link href="mailto:info@spendy.com" className="mx-2 my-2 text-lg opacity-70">info@introo.com</Link>
+                    <p className="opacity-50 uppercase text-[12px] mx-2">Theme</p>
+                    <ThemeSelector openSidebar={!open} />
                 </div>
             </ul>
             

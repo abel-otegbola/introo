@@ -31,7 +31,7 @@ export default function Home() {
           </ScrollTextReveal>
 
           
-          <div className="relative my-4 md:w-[60%] w-full mx-auto flex flex-col border border-gray-400/[0.1] shadow-[0px_4px_24px_rgba(0,0,0,0.05)] p-2 overflow-hidden justify-between h-[200px] md:rounded-[16px] rounded-[12px] bg-[#FFF] dark:bg-[#141414]">
+          <div className="relative my-4 md:w-[60%] w-full mx-auto flex flex-col border border-gray-400/[0.1] shadow-[0px_4px_24px_rgba(0,0,0,0.05)] p-2 overflow-hidden justify-between h-[140px] md:rounded-[16px] rounded-[12px] bg-[#FFF] dark:bg-[#141414]">
             <div className="flex items-end justify-between w-full flex-1">
               <textarea
                 placeholder="Describe your video"
