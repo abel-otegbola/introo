@@ -10,7 +10,7 @@ import PricingSection from "@/components/sections/PricingSection";
 import TestimonialsPage from "../components/sections/testimonials";
 import HowItWorks from "@/components/sections/howItWorks";
 import Features from "@/components/sections/features";
-import { Plus } from "lucide-react";
+import { Plus, Star, Shapes, ScreenShare, StarPlus } from "lucide-react";
 import Button from "@/components/button/Button";
 
 export default function Home() {
@@ -27,11 +27,11 @@ export default function Home() {
             <span className="text-secondary opacity-50">Generate motion</span> <br /> videos for your projects.
           </AnimateHeading>
           <ScrollTextReveal repeat={true} tag="p" delay={0.6} className="my-4 md:w-[65%] mx-auto font-medium opacity-75">
-            Create motion launch videos for your projects with narration and music in minutes. No design skills needed.
+            Create motion videos for product launches, updates, and social content in minutes. No design skills needed.
           </ScrollTextReveal>
 
           
-          <div className="relative my-4 md:w-[60%] w-full mx-auto flex flex-col border border-gray-400/[0.1] shadow-[0px_4px_24px_rgba(0,0,0,0.05)] p-2 overflow-hidden justify-between h-[140px] md:rounded-[16px] rounded-[12px] bg-[#FFF] dark:bg-[#141414]">
+          <div className="relative my-4 md:w-[60%] w-full mx-auto flex flex-col border border-gray-400/[0.1] shadow-[0px_4px_10px_rgba(0,0,0,0.05)] p-2 overflow-hidden justify-between h-[140px] rounded-[20px] bg-[#FFF] dark:bg-[#181818]">
             <div className="flex items-end justify-between w-full flex-1">
               <textarea
                 placeholder="Describe your video"
@@ -45,6 +45,26 @@ export default function Home() {
               </button>
               <Button size="sm" className="bg-secondary" disabled={false}>Generate video</Button>
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:w-[60%] w-full">
+            {
+              [
+                { id: 0, title: "Product launch", text: "Logo + UI motion animation", icon: <Star size={14} /> },
+                { id: 1, title: "Feature showcase", text: "UI walkthrough + highlights", icon: <Shapes size={14} /> },
+                { id: 2, title: "Social media video", text: "Short-form promo clips", icon: <ScreenShare size={14} /> },
+                { id: 3, title: "Product update", text: "Release notes + progress recap", icon: <StarPlus size={14} /> },
+              ].map(item => (
+                <div key={item.id} className="flex flex-col gap-2 w-full border border-gray-400/[0.1] p-3 overflow-hidden justify-between rounded-[12px] bg-[#FBFBFB] dark:bg-[#121212]">
+                  <div className="flex gap-2 items-center">
+                    <span className="p-1 rounded bg-gray-500/[0.08] border border-gray-400/[0.09]">
+                      {item.icon}
+                    </span>
+                    <h1 className="text-[15px]">{item.title}</h1>
+                  </div>
+                  <p className="opacity-15 text-[12px] text-start">{item.text}</p>
+                </div>
+              ))
+            }
           </div>
 
         {/* ========== MARQUEE ========== */}
